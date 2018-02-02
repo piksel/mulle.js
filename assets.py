@@ -228,6 +228,8 @@ MulleResources.append(resSolhem)
 
 
 assetOutPath = "./dist/assets"
+if not os.path.exists(assetOutPath):
+	os.makedirs(assetOutPath)
 assetWebPath = "assets"
 resourcePath = 'cst_out_new'
 meta = {}
