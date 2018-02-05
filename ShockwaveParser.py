@@ -17,6 +17,8 @@ from PIL import Image, ImageDraw, ImagePalette
 
 import bitstring
 
+import tempfile
+
 
 PALETTE_MAC = [
 	0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x00, 0x22, 0x22, 0x22, 0x00, 0x44, 0x44, 0x44, 0x00, 0x55, 0x55, 0x55, 0x00, 0x77, 0x77, 0x77, 0x00, 0x88, 0x88, 0x88, 0x00, 0xAA, 0xAA, 0xAA, 0x00, 0xBB, 0xBB, 0xBB, 0x00, 0xDD, 0xDD, 0xDD, 0x00, 0xEE, 0xEE, 0xEE, 0x00, 0x11, 0x00, 0x00,
@@ -1465,22 +1467,21 @@ class ShockwaveParser:
 
 										dr.point( (x, y), bitmapValues[y][x] )
 									
-							
-							im.save( "/tmp/swp.bmp", "BMP")
-							# im.save( outPath + "/" + outFileName + ".bmp", "BMP")
+							tmpFile = tempfile.NamedTemporaryFile()
+							im.save(tmpFile, "BMP")
 
 							# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
 
 							#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
 							if self.baseName in OPAQUE and num in OPAQUE[self.baseName]:
 								print("Opaque!")
-								call(["convert","/tmp/swp.bmp", outPath + "/" + outFileName + ".png"])
+								call(["convert", tmpFile.name, outPath + "/" + outFileName + ".png"])
 								# call("magick convert " + outPath + "/" + outFileName + ".bmp " + outPath + "/" + outFileName + ".png")
 							else:
 								print("Translucent!")
-								call(["convert","/tmp/swp.bmp","-transparent","#FFFFFF", outPath + "/" + outFileName + ".png"])
+								call(["convert", tmpFile.name, "-transparent", "#FFFFFF", outPath + "/" + outFileName + ".png"])
 								# call("magick convert " + outPath + "/" + outFileName + ".bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
-
+							tmpFile.close()
 
 							imMeta = {
 								"name": entry["name"],
