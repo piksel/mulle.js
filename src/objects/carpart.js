@@ -2,17 +2,16 @@
  * MulleCarPart object
  * @module objects/carpart
  */
-"use strict";
+'use strict'
 
-import MulleSprite from 'objects/sprite';
+import MulleSprite from 'objects/sprite'
 
 /**
  * Mulle sprite, extension of phaser sprite
  * @extends MulleSprite
  */
 class MulleCarPart extends MulleSprite {
-
-	/**
+  /**
 	 * Create car part
 	 * @param  {Phaser.Game}	game      Main game
 	 * @param  {number}			part_id   Junk part ID
@@ -21,51 +20,48 @@ class MulleCarPart extends MulleSprite {
 	 * @param  {boolean}		noPhysics Disable physics
 	 * @return {void}
 	 */
-	constructor( game, part_id, x, y, noPhysics = false ){
+  constructor (game, part_id, x, y, noPhysics = false) {
+    super(game, x, y)
 
-		super(game, x, y);
+    this.part_id = part_id
 
-		this.part_id = part_id;
+    this.car = null
 
-		this.car = null;
+    this.canAttach = false
+    this.activeMorph = null
+    this.activeView = null
+    this.noAttach = false
+    this.snapSound = false
 
-		this.canAttach = false;
-		this.activeMorph = null;
-		this.activeView = null;
-		this.noAttach = false;
-		this.snapSound = false;
+    this.snapDistance = 40
 
-		this.snapDistance = 40;
+    this.justDetached = false
 
-		this.justDetached = false;
+    this.groundSound = false
 
-		this.groundSound = false;
+    this.noPhysics = noPhysics
 
-		this.noPhysics = noPhysics;
+    this.dropTargets = []
 
-		this.dropTargets = [];
+    this.dragTicks = 0
 
-		this.dragTicks = 0;
+    if (!this.game.mulle.PartsDB[ this.part_id ]) {
+      console.error('invalid part', this.part_id)
+      return
+    }
 
+    this.partData = this.game.mulle.getPart(this.part_id)
 
-		if(!this.game.mulle.PartsDB[ this.part_id ]){
-			console.error('invalid part', this.part_id);
-			return;
-		}
+    // this.sound_grab = "00e004v0";
+    this.sound_floor = '00e001v0'
+    this.sound_attach = '03e003v0'
 
-		this.partData = this.game.mulle.getPart( this.part_id );
+    var weight = this.getProperty('weight')
 
-		// this.sound_grab = "00e004v0";
-		this.sound_floor = "00e001v0";
-		this.sound_attach = "03e003v0";
-		
-		var weight = this.getProperty('weight');
+    // console.log(this.part_id, 'weight', weight);
 
-		// console.log(this.part_id, 'weight', weight);
-
-		if(weight){
-
-			/*
+    if (weight) {
+      /*
 				"00e001v0" // light floor
 				"00e002v0" // medium floor
 				"00e003v0" // heavy floor
@@ -78,114 +74,96 @@ class MulleCarPart extends MulleSprite {
 				"03e003v1" // medium attach
 				"03e003v2" // heavy attach
 			*/
-		
-			if(weight >= 4){
-				this.sound_attach 	= "03e003v2";
-				this.sound_floor 	= "00e003v0";
-			}else if(weight >= 2){
-				this.sound_attach 	= "03e003v1";
-				this.sound_floor 	= "00e002v0";
-			}
 
-			
+      if (weight >= 4) {
+        this.sound_attach 	= '03e003v2'
+        this.sound_floor 	= '00e003v0'
+      } else if (weight >= 2) {
+        this.sound_attach 	= '03e003v1'
+        this.sound_floor 	= '00e002v0'
+      }
+    }
 
-		}
+    this.default = {
+      junkView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.junkView),
+      UseView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView),
+      UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView2),
+      offset: this.partData.offset.clone()
+    }
 
-		
-		this.default = {
-			junkView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.junkView),
-			UseView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView),
-			UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView2),
-			offset: this.partData.offset.clone()
-		};
+    console.log('default', this.default)
 
-		console.log('default', this.default);
-		
-		this.morphs = null;
+    this.morphs = null
 
-		if( this.partData.MorphsTo ){
+    if (this.partData.MorphsTo) {
+      this.morphs = []
 
-			this.morphs = [];
+      for (let i = 0; i < this.partData.MorphsTo.length; i++) {
+        let partId = this.partData.MorphsTo[i]
+        let partData = this.game.mulle.getPart(partId)
 
-			for( let i = 0; i < this.partData.MorphsTo.length; i++ ){
-				
-				let partId = this.partData.MorphsTo[i];
-				let partData = this.game.mulle.getPart(partId);
+        // this.morphs.push(partData);
 
-				// this.morphs.push(partData);
-				
-				this.morphs.push({
-					
-					partId: partId,
-					partData: partData,
-					
-					junkView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.junkView),
-					UseView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView),
-					UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView2),
-					
-					offset: partData.offset.clone()
+        this.morphs.push({
 
-				});
-				
+          partId: partId,
+          partData: partData,
 
-			}
+          junkView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.junkView),
+          UseView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView),
+          UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView2),
 
-		}
+          offset: partData.offset.clone()
 
-		// this.loadTexture( this.UseView.key, this.UseView.frame );
+        })
+      }
+    }
 
-		this.setImage('junkView');
+    // this.loadTexture( this.UseView.key, this.UseView.frame );
 
+    this.setImage('junkView')
 
-		this.inputEnabled = true;
+    this.inputEnabled = true
 
-		this.input.enableDrag(false);
-		
-		// this.input.useHandCursor = true;
-		
-		this.cursor = 'Grab';
-		
-		// this.cursorDefault = 'grab';
-		// this.cursorGrab = 'grab';
+    this.input.enableDrag(false)
 
-		
-		this.events.onInputOver.add(() => {
-			this.game.mulle.cursor.current = 'Grab';
-		});
+    // this.input.useHandCursor = true;
 
-		this.events.onInputOut.add(() => {
-			this.game.mulle.cursor.current = null;
-		});
-		
+    this.cursor = 'Grab'
 
-		// dragging
-		this.events.onDragStart.add( this.onGrab.bind(this) );
-		this.events.onDragStop.add( this.onDrop.bind(this) );
-		this.events.onDragUpdate.add( this.onMove.bind(this) );
+    // this.cursorDefault = 'grab';
+    // this.cursorGrab = 'grab';
 
+    this.events.onInputOver.add(() => {
+      this.game.mulle.cursor.current = 'Grab'
+    })
 
-		if(!this.noPhysics){
+    this.events.onInputOut.add(() => {
+      this.game.mulle.cursor.current = null
+    })
 
-			this.game.physics.enable( this, Phaser.Physics.ARCADE);
-			this.body.collideWorldBounds = true;
+    // dragging
+    this.events.onDragStart.add(this.onGrab.bind(this))
+    this.events.onDragStop.add(this.onDrop.bind(this))
+    this.events.onDragUpdate.add(this.onMove.bind(this))
 
-			this.body.onWorldBounds = new Phaser.Signal();
-			this.body.onWorldBounds.add(this.onHitGround, this);
+    if (!this.noPhysics) {
+      this.game.physics.enable(this, Phaser.Physics.ARCADE)
+      this.body.collideWorldBounds = true
 
-		}
-		
-		// console.log('part', this.part_id, this.partData);
+      this.body.onWorldBounds = new Phaser.Signal()
+      this.body.onWorldBounds.add(this.onHitGround, this)
+    }
 
-	}
+    // console.log('part', this.part_id, this.partData);
+  }
 
-
-	/**
+  /**
 	 * Set active image
 	 * @param {string} name junkView/UseView/UseView2
 	 */
-	setImage( name ){
-
-		/*
+  setImage (name) {
+    /*
 		if( this.frameName == name ) return;
 
 		if( this.activeMorph != null ){
@@ -198,35 +176,28 @@ class MulleCarPart extends MulleSprite {
 
 		}
 		*/
-		
-		var src = this.activeMorph != null ? this.morphs[ this.activeMorph ] : this.default;
 
-		if( this.key == src[name].key && this.animations.frameName == src[name].name ) return;
+    var src = this.activeMorph != null ? this.morphs[ this.activeMorph ] : this.default
 
+    if (this.key == src[name].key && this.animations.frameName == src[name].name) return
 
-		if( this.key == src[name].key ){
+    if (this.key == src[name].key) {
+      // console.log('same key', src[name].name, this.frameName);
 
-			// console.log('same key', src[name].name, this.frameName);
+      this.frameName = src[name].name
+    } else {
+      this.loadTexture(src[name].key, src[name].name)
+    }
 
-			this.frameName = src[name].name;
+    this.activeView = name
 
-		}else{
+    console.debug('set image', this.activeMorph, name, src[name].key, src[name].name)
+  }
 
-			this.loadTexture( src[name].key, src[name].name );
+  onMove (game, pointer, x, y, point, fromStart) {
+    // console.debug('move part', pointer, x, y, point, fromStart);
 
-		}
-
-		this.activeView = name;
-
-		console.debug('set image', this.activeMorph, name,  src[name].key,  src[name].name);
-
-	}
-
-	onMove( game, pointer, x, y, point, fromStart ){
-
-		// console.debug('move part', pointer, x, y, point, fromStart);
-
-		/*
+    /*
 		for( var obj of window.game.world.children ){
 
 			if( obj.hitArea ){
@@ -238,7 +209,7 @@ class MulleCarPart extends MulleSprite {
 						obj.events.onInputOver.dispatch(this, { dragging: this } );
 						obj.isOver = true;
 					}
-					
+
 				}else{
 
 					if(obj.isOver){
@@ -247,7 +218,6 @@ class MulleCarPart extends MulleSprite {
 						obj.isOver = null;
 					}
 
-
 				}
 
 			}
@@ -255,416 +225,338 @@ class MulleCarPart extends MulleSprite {
 		}
 		*/
 
-		
-		if( this.dropTargets ){
+    if (this.dropTargets) {
+      for (var t of this.dropTargets) {
+        // console.log(i, this.dropTargets[i]);
 
-			for( var t of this.dropTargets){
-				
-				// console.log(i, this.dropTargets[i]);
-				
-				if(!t[0].hitArea) continue;
+        if (!t[0].hitArea) continue
 
-				// var test = t[0].hitArea.clone();
-				// test.offset( t[0].x, t[0].y );
+        // var test = t[0].hitArea.clone();
+        // test.offset( t[0].x, t[0].y );
 
-				// game.debug.geom(test,'rgba(255,0,0,.6)');
+        // game.debug.geom(test,'rgba(255,0,0,.6)');
 
-				if( t[0].hitArea.contains( pointer.x - t[0].position.x, pointer.y - t[0].position.y ) ){
+        if (t[0].hitArea.contains(pointer.x - t[0].position.x, pointer.y - t[0].position.y)) {
+          if (!t[0].isHovering) {
+            t[0].cursor = t[0].cursorDrag
 
-					if( !t[0].isHovering ){
+            t[0].events.onInputOver.dispatch()
 
-						t[0].cursor = t[0].cursorDrag;
+            t[0].isHovering = true
 
-						t[0].events.onInputOver.dispatch();
-						
-						t[0].isHovering = true;
+            // this.game.mulle.cursor.add( t[0].cursorDrag );
+          }
 
-						// this.game.mulle.cursor.add( t[0].cursorDrag );
+          break
+        } else {
+          if (t[0].isHovering) {
+            t[0].cursor = t[0].cursorHover
 
-					}
+            t[0].events.onInputOut.dispatch()
 
-					break;
+            t[0].isHovering = null
 
-				}else{
+            // this.game.mulle.cursor.remove( t[0].cursorDrag );
+          }
+        }
+      }
+    }
 
-					if( t[0].isHovering ){
+    if (!this.car) return
 
-						t[0].cursor = t[0].cursorHover;
-						
-						t[0].events.onInputOut.dispatch();
-						
-						t[0].isHovering = null;
+    if (!this.justDetached && this.noAttach) {
+      this.activeMorph = null
+      this.canAttach = false
 
-						// this.game.mulle.cursor.remove( t[0].cursorDrag );
+      if (this.activeView != 'junkView') this.setImage('junkView')
 
-					}
+      this.dragTicks++
+      if (this.dragTicks == 60) {
+        this.game.mulle.actors.mulle.talk('03d04' + this.game.rnd.integerInRange(0, 2) + 'v0')
+      }
 
-				}
+      // console.log('no attach');
 
-			}
+      return
+    }
 
-		}
-		
+    var offJnk = this.default.junkView.frame.regpoint
 
-		if(!this.car) return;
+    if (this.morphs) {
+      for (var i = 0; i < this.morphs.length; i++) {
+        var morph = this.morphs[i]
 
-		if( !this.justDetached && this.noAttach ){
+        // var partData = this.game.PartsDB[ partId ];
 
-			this.activeMorph = null;
-			this.canAttach = false;
+        var offUse = morph.UseView.frame.regpoint
 
-			if( this.activeView != 'junkView' ) this.setImage('junkView');
+        var chk_x = x - offJnk.x + offUse.x
+        var chk_y = y - offJnk.y + offUse.y - morph.offset.y
 
-			this.dragTicks++;
-			if( this.dragTicks == 60 ){
+        var dst_x = this.car.x + morph.offset.x
+        var dst_y = this.car.y + morph.offset.y
 
-				this.game.mulle.actors.mulle.talk('03d04' + this.game.rnd.integerInRange(0, 2) + 'v0');
+        var distance = this.game.math.distance(chk_x, chk_y, dst_x, dst_y)
 
-			}
+        if (distance < this.snapDistance) {
+          // console.log('snap to morph ' + i);
 
-			// console.log('no attach');
+          if (!this.checkCanAttach(i)) continue
 
-			return;
+          this.position.set(dst_x, dst_y)
+          this.canAttach = true
+          this.activeMorph = i
+          this.setImage('UseView')
 
-		}
+          if (!this.snapSound) {
+            this.game.mulle.playAudio(this.sound_attach)
+            this.snapSound = true
+          }
 
-		var offJnk = this.default.junkView.frame.regpoint;
+          return
+        }
+      }
 
-		if( this.morphs ){
+      if (this.snapSound) {
+        this.game.mulle.playAudio(this.sound_attach)
+        this.snapSound = false
+      }
 
-			for( var i = 0; i < this.morphs.length; i++ ){
-				
-				var morph = this.morphs[i];
-				
-				// var partData = this.game.PartsDB[ partId ];
-				
-				var offUse = morph.UseView.frame.regpoint;
+      this.canAttach = false
+      this.activeMorph = null
+      this.setImage('junkView')
+    } else {
+      // var offJnk = this.game.offsets[ this.junkView.frame ];
 
-				var chk_x = x - offJnk.x + offUse.x;
-				var chk_y = y - offJnk.y + offUse.y - morph.offset.y;
+      var offUse = this.default.UseView.frame.regpoint
 
-				var dst_x = this.car.x + morph.offset.x;
-				var dst_y = this.car.y + morph.offset.y;
+      var chk_x = x - offJnk.x + offUse.x
+      var chk_y = y - offJnk.y + offUse.y
 
-				var distance = this.game.math.distance( chk_x, chk_y, dst_x, dst_y );
+      var distance = this.game.math.distance(chk_x, chk_y, this.car.x, this.car.y)
 
-				if( distance < this.snapDistance ){
-					// console.log('snap to morph ' + i);
-					
-					if(!this.checkCanAttach(i)) continue;
+      if (distance < this.snapDistance && this.checkCanAttach()) {
+        this.setImage('UseView')
+        this.position.set(this.car.x, this.car.y)
+        this.canAttach = true
 
-					this.position.set( dst_x, dst_y );
-					this.canAttach = true;
-					this.activeMorph = i;
-					this.setImage('UseView');
+        if (!this.snapSound) {
+          this.game.mulle.playAudio(this.sound_attach)
+          this.snapSound = true
+        }
+      } else {
+        this.setImage('junkView')
+        this.canAttach = false
 
-					if(!this.snapSound){
-						this.game.mulle.playAudio( this.sound_attach );
-						this.snapSound = true;
-					}
+        if (this.snapSound) {
+          this.game.mulle.playAudio(this.sound_attach)
+          this.snapSound = false
+        }
+      }
+    }
+  }
 
-					return;
-				}
-
-			}
-
-			if( this.snapSound ){
-				this.game.mulle.playAudio( this.sound_attach );
-				this.snapSound = false;
-			}
-			
-			this.canAttach = false;
-			this.activeMorph = null;
-			this.setImage('junkView');
-			
-
-		}else{
-			
-			// var offJnk = this.game.offsets[ this.junkView.frame ];
-			
-			var offUse = this.default.UseView.frame.regpoint;
-
-			var chk_x = x - offJnk.x + offUse.x;
-			var chk_y = y - offJnk.y + offUse.y;
-
-			var distance = this.game.math.distance( chk_x, chk_y, this.car.x, this.car.y );
-
-			if( distance < this.snapDistance && this.checkCanAttach() ){
-
-				this.setImage('UseView');
-				this.position.set( this.car.x, this.car.y );
-				this.canAttach = true;
-
-				if(!this.snapSound){
-					this.game.mulle.playAudio( this.sound_attach );
-					this.snapSound = true;
-				}
-
-			}else{
-				this.setImage('junkView');
-				this.canAttach = false;
-
-				if( this.snapSound ){
-					this.game.mulle.playAudio( this.sound_attach );
-					this.snapSound = false;
-				}
-				
-
-			}
-
-		}
-
-	}
-
-	/**
+  /**
 	 * Check if part can be attached
 	 * @param  {number} morph Morph ID
 	 * @return {boolean}
 	 */
-	checkCanAttach( morph = null ){
+  checkCanAttach (morph = null) {
+    // this.noAttach = false;
+
+    if (morph != null && this.morphs) {
+      if (this.morphs[ morph ].partData.Requires) {
+        for (var r in this.morphs[ morph ].partData.Requires) {
+          if (this.car.usedPoints[ this.morphs[ morph ].partData.Requires[r] ]) {
+            // console.log('used point', morph);
+            return false
+          }
+        }
+      }
+
+      if (this.morphs[ morph ].partData.Covers) {
+        for (var r in this.morphs[ morph ].partData.Covers) {
+          if (this.car.coveredPoints[ this.morphs[ morph ].partData.Covers[r] ]) {
+            // console.log('covered point', morph, this.morphs[ morph ].partData.Covers[r] );
+            return false
+          }
+        }
+      }
+    }
+
+    if (this.partData.Requires) {
+      var hasPoint = false
+      for (var r in this.partData.Requires) {
+        if (this.car.points[ this.partData.Requires[r] ]) {
+          hasPoint = true
+          break
+        }
+      }
+      if (!hasPoint) return false
 
-		// this.noAttach = false;
+      for (var r in this.partData.Requires) {
+        if (this.car.usedPoints[ this.partData.Requires[r] ]) {
+          return false
+        }
+      }
 
-		if( morph != null && this.morphs ){
+      for (var r in this.partData.Covers) {
+        if (this.car.coveredPoints[ this.partData.Covers[r] ]) {
+          return false
+        }
+      }
+    }
 
-			if( this.morphs[ morph ].partData.Requires ){
-				for( var r in this.morphs[ morph ].partData.Requires ){
-					if( this.car.usedPoints[ this.morphs[ morph ].partData.Requires[r] ] ){
-						// console.log('used point', morph);
-						return false;
-					}
-				}
-			}
+    return true
+  }
 
-			if( this.morphs[ morph ].partData.Covers ){
-				for( var r in this.morphs[ morph ].partData.Covers ){
-					if( this.car.coveredPoints[ this.morphs[ morph ].partData.Covers[r] ] ){
-						// console.log('covered point', morph, this.morphs[ morph ].partData.Covers[r] );
-						return false;
-					}
-				}
-			}
+  onGrab () {
+    // console.debug('grab part', this);
 
-		}
+    this.dragTicks = 0
+
+    this.bringToTop()
+
+    // this.game.mulle.playAudio( this.sound_grab );
+
+    this.groundSound = false
+
+    if (!this.noPhysics) {
+      this.body.moves = false
+    }
 
-		if( this.partData.Requires ){
+    if (!this.car) return
+
+    if (this.morphs) {
+      var ok = this.morphs.length
+      this.morphs.forEach((m, i) => {
+        if (!this.checkCanAttach(i)) ok--
+      })
 
-			var hasPoint = false;
-			for( var r in this.partData.Requires ){
-				if( this.car.points[ this.partData.Requires[r] ] ){
-					hasPoint = true;
-					break;
-				}
-			}
-			if(!hasPoint) return false;
+      this.noAttach = ok <= 0
+    } else {
+      this.noAttach = !this.checkCanAttach()
+    }
+  }
 
-			for( var r in this.partData.Requires ){
-				if( this.car.usedPoints[ this.partData.Requires[r] ] ){
-					return false;
-				}
-			}
+  onDrop (obj, pointer) {
+    // console.log('drop part', a, b, c);
 
-			for( var r in this.partData.Covers ){
-				if( this.car.coveredPoints[ this.partData.Covers[r] ] ){
-					return false;
-				}
-			}
+    if (!this.justDetached) {
+      var dist = Phaser.Point.distance(this.position, this.input.dragStartPoint)
 
-		}
+      if (dist < 5) {
+        this.playDescription()
+      }
+    }
 
-		return true;
+    this.snapSound = false
 
-	}
+    if (!this.noPhysics) {
+      this.body.moves = true
+      this.body.velocity.set(0)
+    } else {
+      this.game.mulle.playAudio(this.sound_floor)
+    }
 
-	onGrab(){
+    this.justDetached = false
 
-		// console.debug('grab part', this);
+    if (!this.noAttach && this.canAttach) {
+      var partId = this.part_id
 
-		this.dragTicks = 0;
+      if (this.activeMorph !== null) partId = this.morphs[ this.activeMorph ].partId
 
-		this.bringToTop();
+      console.log('attach part by drag', partId)
 
-		// this.game.mulle.playAudio( this.sound_grab );
+      this.events.onInputOut.dispatch()
 
-		this.groundSound = false;
+      this.destroy()
 
-		if(!this.noPhysics){
-			this.body.moves = false;
-		}
+      this.car.attach(partId)
 
-		if(!this.car) return;
+      return
+    } else {
+      this.activeMorph = null
+      this.setImage('junkView')
+    }
 
-		if( this.morphs ){
+    // drop action
+    if (this.dropTargets) {
+      for (var dt of this.dropTargets) {
+        // console.log(i, this.dropTargets[i]);
 
-			var ok = this.morphs.length;
-			this.morphs.forEach( (m, i) => {
-				if( !this.checkCanAttach(i) ) ok--;				
-			});
+        if (!dt[0].hitArea) continue
 
-			this.noAttach = ok <= 0;
+        // var test = dt[0].hitArea.clone();
+        // test.offset( dt[0].x, dt[0].y );
 
-		}else{
+        // game.debug.geom(test,'rgba(255,0,0,.6)');
 
-			this.noAttach = !this.checkCanAttach();
+        if (dt[0].hitArea.contains(pointer.x - dt[0].position.x, pointer.y - dt[0].position.y)) {
+          var g = this.game // save this just for a second
 
-		}
+          var ret = dt[1](this)
 
+          if (ret) {
+            g.mulle.cursor.remove(dt[0].cursor)
 
-	}
-	
-	onDrop( obj, pointer ){
+            dt[0].cursor = dt[0].cursorHover
 
-		// console.log('drop part', a, b, c);
+            return
+          }
+        }
+      }
+    }
 
-		if(!this.justDetached){
+    // tween back
+    if (this.dropRects) {
+      var inBounds = false
+      for (var i = 0; i < this.dropRects.length; i++) {
+        if (this.dropRects[i].contains(this.x, this.y)) {
+          inBounds = true
+          break
+        }
+      }
 
-			var dist = Phaser.Point.distance( this.position, this.input.dragStartPoint );
+      if (!inBounds) {
+        // console.log('out of bounds');
 
-			if( dist < 5 ){
+        var r = this.game.rnd.pick(this.dropRects)
 
-				this.playDescription();
+        this.game.add.tween(this).to({ x: r.randomX, y: r.randomY }, 1000, Phaser.Easing.Cubic.Out, true)
+      }
+    }
 
-			}
+    // if( this.junkPile ){
+    // 	this.updateJunkPile();
+    // }
+  }
 
-		}
+  onHitGround () {
+    if (!this.groundSound) {
+      this.game.mulle.playAudio(this.sound_floor)
 
-		
-		this.snapSound = false;
+      this.groundSound = true
 
-		if(!this.noPhysics){
-			this.body.moves = true;
-			this.body.velocity.set(0);
-		}else{
+      // if( this.junkPile ){
+      // 	this.updateJunkPile();
+      // }
+    }
+  }
 
-			this.game.mulle.playAudio( this.sound_floor );
-
-		}
-
-		this.justDetached = false;
-
-		if( !this.noAttach && this.canAttach ){
-
-			var partId = this.part_id;
-
-			if( this.activeMorph !== null ) partId = this.morphs[ this.activeMorph ].partId;
-
-			console.log('attach part by drag', partId);
-
-			this.events.onInputOut.dispatch();
-
-			this.destroy();
-			
-			this.car.attach( partId );
-
-			return;
-
-		}else{
-
-			this.activeMorph = null;
-			this.setImage('junkView');
-
-		}
-
-		// drop action
-		if( this.dropTargets ){
-
-			for( var dt of this.dropTargets ){
-				
-				// console.log(i, this.dropTargets[i]);
-				
-				if(!dt[0].hitArea) continue;
-
-				// var test = dt[0].hitArea.clone();
-				// test.offset( dt[0].x, dt[0].y );
-				
-				// game.debug.geom(test,'rgba(255,0,0,.6)');
-
-				if( dt[0].hitArea.contains( pointer.x - dt[0].position.x, pointer.y - dt[0].position.y ) ){
-
-					var g = this.game; // save this just for a second
-					
-					var ret = dt[1]( this );
-					
-					if(ret){
-
-						g.mulle.cursor.remove( dt[0].cursor );
-
-						dt[0].cursor = dt[0].cursorHover;
-
-						return;
-
-					}
-
-				}
-
-			}
-
-		}
-
-
-		// tween back
-		if( this.dropRects ){
-
-			var inBounds = false;
-			for( var i = 0; i < this.dropRects.length; i++ ){
-				if( this.dropRects[i].contains( this.x, this.y ) ){
-					inBounds = true;
-					break;
-				}
-			}
-
-			if(!inBounds){
-
-				// console.log('out of bounds');
-				
-				var r = this.game.rnd.pick( this.dropRects ); 
-
-				this.game.add.tween(this).to( { x: r.randomX, y: r.randomY }, 1000, Phaser.Easing.Cubic.Out, true);
-
-
-			}
-			
-		}
-
-		// if( this.junkPile ){
-		// 	this.updateJunkPile();
-		// }
-
-	}
-
-	onHitGround(){
-
-		if(!this.groundSound){
-
-			this.game.mulle.playAudio( this.sound_floor );
-
-			this.groundSound = true;
-
-			// if( this.junkPile ){
-			// 	this.updateJunkPile();
-			// }
-
-		}
-
-	}
-
-	/**
+  /**
 	 * Have Mulle talk about the part
 	 * @return {void}
 	 */
-	playDescription(){
+  playDescription () {
+    if (!this.game.mulle.actors.mulle) return
 
-		if(!this.game.mulle.actors.mulle) return;
+    this.game.mulle.actors.mulle.talk(this.partData.description)
+  }
 
-		this.game.mulle.actors.mulle.talk( this.partData.description );
-
-	}
-
-	getProperty( name ){
-		return this.partData.getProperty( name );
-	}
-	
-
+  getProperty (name) {
+    return this.partData.getProperty(name)
+  }
 }
 
-export default MulleCarPart;
+export default MulleCarPart

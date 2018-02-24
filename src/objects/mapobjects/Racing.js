@@ -1,210 +1,171 @@
-"use strict";
+'use strict'
 
-import MulleSprite from 'objects/sprite';
+import MulleSprite from 'objects/sprite'
 
-var MapObject = {};
+var MapObject = {}
 
-MapObject.ObjectId = 7;
+MapObject.ObjectId = 7
 
-function boardNumber( n ){
-
-	return Math.round( n * 100 ) / 100;
-
+function boardNumber (n) {
+  return Math.round(n * 100) / 100
 }
 
-MapObject.onCreate = function(){
+MapObject.onCreate = function () {
+  // console.error('unfinished object', this.id, this);
 
-	// console.error('unfinished object', this.id, this);
+  this.isRacing = false
 
-	this.isRacing = false;
+  this.nrOfTimesPassed = 0
+  this.mustEnterFrom = this.opt.EnterDir
 
-	this.nrOfTimesPassed = 0
-	this.mustEnterFrom = this.opt.EnterDir;
+  this.board = new MulleSprite(this.game, this.opt.Board.x, this.opt.Board.y)
+  this.board.setDirectorMember('CDDATA.CXT', '31b045v0')
+  this.game.add.existing(this.board)
 
-	this.board = new MulleSprite( this.game, this.opt.Board.x, this.opt.Board.y );
-	this.board.setDirectorMember('CDDATA.CXT', '31b045v0');
-	this.game.add.existing(this.board);
+  this.boardText1 = new Phaser.Text(this.game, 15, 10, '', {
+    font: '16px arial',
+    fill: '#00ff00'
+  })
 
+  this.board.addChild(this.boardText1)
 
-	this.boardText1 = new Phaser.Text( this.game, 15, 10, '', {
-		font: '16px arial',
-		fill: '#00ff00'
-	} );
+  this.boardText2 = new Phaser.Text(this.game, 15, 40, '', {
+    font: '16px arial',
+    fill: '#00ff00'
+  })
 
-	this.board.addChild( this.boardText1 );
+  this.board.addChild(this.boardText2)
 
-	this.boardText2 = new Phaser.Text( this.game, 15, 40, '', {
-		font: '16px arial',
-		fill: '#00ff00'
-	} );
+  this.boardLoop = this.game.time.events.loop(Phaser.Timer.SECOND / 15, () => {
+    if (this.isRacing) {
+      this.boardText1.text = boardNumber((Date.now() - this.raceStart) / 1000)
+    }
+  })
 
-	this.board.addChild( this.boardText2 );
+  this.networkListener = (event) => {
+    var msg = JSON.parse(event.data)
 
-	this.boardLoop = this.game.time.events.loop(Phaser.Timer.SECOND / 15, () => {
+    if (msg.race) {
+      console.log('race msg', msg.race)
 
-		if( this.isRacing ){
-			this.boardText1.text = boardNumber( ( Date.now() - this.raceStart ) / 1000 );
-		}
+      if (msg.race[0]) this.boardText1.text = boardNumber(msg.race[0].time) + ' ' + msg.race[0].name
 
-	});
+      if (msg.race[1]) this.boardText2.text = boardNumber(msg.race[1].time) + ' ' + msg.race[1].name
+    }
+  }
 
-	this.networkListener = (event) => {
-		
-		var msg = JSON.parse(event.data);
-
-		if( msg.race ){
-
-			console.log('race msg', msg.race);
-
-			if( msg.race[0] ) this.boardText1.text = boardNumber( msg.race[0].time ) + " " + msg.race[0].name;
-
-			if( msg.race[1] ) this.boardText2.text = boardNumber( msg.race[1].time ) + " " + msg.race[1].name;
-
-		}
-
-	}
-
-	this.game.mulle.net.socket.addEventListener('message', this.networkListener );
-
-};
-
-
-function calcDirection( theStart, theEnd ){
-	
-	var diffX = theEnd.x - theStart.x;
-	var diffY = theStart.y - theEnd.y;
-
-	var hypo = Math.sqrt(diffX * diffX + diffY * diffY)
-	
-	if(diffY == 0) diffY = 0.1
-
-	var tempDirection = Math.atan( diffX / diffY );
-
-	if(diffX > 0){
-		if(diffY > 0){
-			// nothing()
-		}else{
-			tempDirection = tempDirection + Math.PI;
-		}
-	}else{
-		if(diffY > 0){
-			tempDirection = tempDirection + 2 * Math.PI;
-		}else{
-			tempDirection = tempDirection + Math.PI;
-		}
-	}
-
-	tempDirection = tempDirection / Math.PI;
-	
-	tempDirection = Math.round( tempDirection * 16 / 2 );
-	
-	if(tempDirection == 0) tempDirection = 16
-
-	//if option = #WithHypo then
-	//	return([tempDirection, hypo])
-	//}
-	//
-	return tempDirection;
-
+  this.game.mulle.net.socket.addEventListener('message', this.networkListener)
 }
 
-MapObject.onEnterInner = function( car ){
+function calcDirection (theStart, theEnd) {
+  var diffX = theEnd.x - theStart.x
+  var diffY = theStart.y - theEnd.y
 
-	var tempEnterAngl = calcDirection( car.position, this.position );
-	var diff = Math.abs( this.mustEnterFrom - tempEnterAngl );
-	if( diff > 8 ) diff = 16 - diff;
+  var hypo = Math.sqrt(diffX * diffX + diffY * diffY)
 
-	if( diff <= 3 ){
+  if (diffY == 0) diffY = 0.1
 
-		this.enteredFrom = 1;
+  var tempDirection = Math.atan(diffX / diffY)
 
-		if( this.isRacing ){
+  if (diffX > 0) {
+    if (diffY > 0) {
+      // nothing()
+    } else {
+      tempDirection = tempDirection + Math.PI
+    }
+  } else {
+    if (diffY > 0) {
+      tempDirection = tempDirection + 2 * Math.PI
+    } else {
+      tempDirection = tempDirection + Math.PI
+    }
+  }
 
-			if( this.nrOfTimesPassed == 1 ){
+  tempDirection = tempDirection / Math.PI
 
-				console.log('finish race');
+  tempDirection = Math.round(tempDirection * 16 / 2)
 
-				this.game.mulle.playAudio( this.def.Sounds[1] );
+  if (tempDirection == 0) tempDirection = 16
 
-				this.isRacing = false;
+  // if option = #WithHypo then
+  //	return([tempDirection, hypo])
+  // }
+  //
+  return tempDirection
+}
 
-				var finalTime = ( Date.now() - this.raceStart ) / 1000;
+MapObject.onEnterInner = function (car) {
+  var tempEnterAngl = calcDirection(car.position, this.position)
+  var diff = Math.abs(this.mustEnterFrom - tempEnterAngl)
+  if (diff > 8) diff = 16 - diff
 
-				this.boardText1.text = boardNumber( finalTime ) + " " + this.game.mulle.user.UserId;
-				
-				this.game.mulle.net.send({ race: finalTime });
+  if (diff <= 3) {
+    this.enteredFrom = 1
 
-				alert( finalTime );
+    if (this.isRacing) {
+      if (this.nrOfTimesPassed == 1) {
+        console.log('finish race')
 
+        this.game.mulle.playAudio(this.def.Sounds[1])
 
-			}
+        this.isRacing = false
 
-		}else{
+        var finalTime = (Date.now() - this.raceStart) / 1000
 
-			console.log('start race');
+        this.boardText1.text = boardNumber(finalTime) + ' ' + this.game.mulle.user.UserId
 
-			this.game.mulle.playAudio( this.def.Sounds[0] );
+        this.game.mulle.net.send({ race: finalTime })
 
-			this.raceStart = Date.now();
+        alert(finalTime)
+      }
+    } else {
+      console.log('start race')
 
-			this.isRacing = true;
+      this.game.mulle.playAudio(this.def.Sounds[0])
 
-			this.nrOfTimesPassed = 0;
+      this.raceStart = Date.now()
 
-		}
+      this.isRacing = true
 
-		return;
-	}
+      this.nrOfTimesPassed = 0
+    }
 
-	this.enteredFrom = -1;
+    return
+  }
 
-};
+  this.enteredFrom = -1
+}
 
-MapObject.onExitInner = function( car ){
+MapObject.onExitInner = function (car) {
+  if (this.isRacing) {
+    console.log('exit inner')
 
-	if( this.isRacing ){
+    var tempEnterAngl = calcDirection(car.position, this.position)
+    var diff = Math.abs(this.mustEnterFrom - tempEnterAngl)
+    if (diff > 8) diff = 16 - diff
 
-		console.log('exit inner');
+    if (diff <= 3) {
+      if (this.enteredFrom == -1) {
+        this.nrOfTimesPassed--
 
-		var tempEnterAngl = calcDirection( car.position, this.position );
-		var diff = Math.abs( this.mustEnterFrom - tempEnterAngl );
-		if( diff > 8 ) diff = 16 - diff;
+        console.log('passed minus', this.nrOfTimesPassed)
+      }
+    } else {
+      if (this.enteredFrom == 1) {
+        this.nrOfTimesPassed++
 
+        console.log('passed plus', this.nrOfTimesPassed)
+      }
+    }
+  }
+}
 
-		if( diff <= 3 ){
+MapObject.onDestroy = function () {
+  this.board.destroy()
 
-			if( this.enteredFrom == -1 ){
+  this.game.time.events.remove(this.boardLoop)
 
-				this.nrOfTimesPassed--;
+  this.game.mulle.net.socket.removeEventListener('message', this.networkListener)
+}
 
-				console.log('passed minus', this.nrOfTimesPassed);
-
-			}
-
-		}else{
-
-			if( this.enteredFrom == 1 ){
-
-				this.nrOfTimesPassed++;
-
-				console.log('passed plus', this.nrOfTimesPassed);
-
-			}
-
-		}
-
-	}
-
-};
-
-MapObject.onDestroy = function(){
-
-	this.board.destroy();
-
-	this.game.time.events.remove( this.boardLoop );
-
-	this.game.mulle.net.socket.removeEventListener('message', this.networkListener );
-
-};
-
-export default MapObject;
+export default MapObject

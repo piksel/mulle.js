@@ -1,31 +1,26 @@
-"use strict";
+'use strict'
 
-var MapObject = {};
+var MapObject = {}
 
-MapObject.onCreate = function(){
+MapObject.onCreate = function () {
 
-	return;
-};
+}
 
-MapObject.onEnterInner = function( car ){
+MapObject.onEnterInner = function (car) {
+  console.log('fill gas')
 
-	console.log('fill gas');
+  var snd = this.game.mulle.playAudio('31e006v0')
 
-	var snd = this.game.mulle.playAudio('31e006v0');
+  car.enabled = false
+  car.speed = 0
 
-	car.enabled = false;
-	car.speed = 0;
+  snd.onStop.addOnce(() => {
+    car.enabled = true
+  })
 
-	snd.onStop.addOnce( () => {
-		car.enabled = true;
-	});
+  game.time.events.repeat(3300 / 10, 10, () => {
+    car.fuelCurrent = this.game.math.clamp(car.fuelCurrent + (car.fuelMax / 10), 0, car.fuelMax)
+  }, this)
+}
 
-	game.time.events.repeat(3300 / 10, 10, () => {
-
-		car.fuelCurrent = this.game.math.clamp( car.fuelCurrent + ( car.fuelMax / 10 ), 0, car.fuelMax );
-
-	}, this);
-
-};
-
-export default MapObject;
+export default MapObject

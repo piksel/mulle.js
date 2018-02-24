@@ -3,69 +3,63 @@
  * @module game
  */
 
-import BootState from 'boot';
-import LoadState from 'load';
+import BootState from 'boot'
+import LoadState from 'load'
 
-import MulleNet from 'util/network';
-import MulleCursor from 'util/cursor';
+import MulleNet from 'util/network'
+import MulleCursor from 'util/cursor'
 
+import MenuState from 'scenes/menu'
 
-import MenuState from 'scenes/menu';
+import GarageState from 'scenes/garage'
+import JunkState from 'scenes/junk'
+import YardState from 'scenes/yard'
 
-import GarageState from 'scenes/garage';
-import JunkState from 'scenes/junk';
-import YardState from 'scenes/yard';
+import WorldState from 'scenes/world'
 
-import WorldState from 'scenes/world';
-
-import FiggeFerrumState from 'scenes/figgeferrum';
-import RoadDogState from 'scenes/roaddog';
-import RoadThingState from 'scenes/roadthing';
-import CarShowState from 'scenes/carshow';
-import StureStortandState from 'scenes/sturestortand';
-import SaftfabrikState from 'scenes/saftfabrik';
-import SolhemState from 'scenes/solhem';
-
+import FiggeFerrumState from 'scenes/figgeferrum'
+import RoadDogState from 'scenes/roaddog'
+import RoadThingState from 'scenes/roadthing'
+import CarShowState from 'scenes/carshow'
+import StureStortandState from 'scenes/sturestortand'
+import SaftfabrikState from 'scenes/saftfabrik'
+import SolhemState from 'scenes/solhem'
 
 // var requireScenes = require.context('scenes', true, /\.js$/);
 // requireScenes.keys().forEach(requireScenes);
 
-import MulleSubtitle from 'objects/subtitle';
+import MulleSubtitle from 'objects/subtitle'
 
-import MulleAudio from 'objects/audio';
+import MulleAudio from 'objects/audio'
 
-import MulleSave from 'struct/savedata';
-
-
+import MulleSave from 'struct/savedata'
 
 // import * as MulleScenes from 'scenes/*';
 
-var memberLookup = {};
-var directorImageLookup = {};
+var memberLookup = {}
+var directorImageLookup = {}
 
 /**
  * Main game object
  * @extends Phaser.Game
  */
 class MulleGame extends Phaser.Game {
+  constructor () {
+    super({
 
-	constructor(){
+      width: 640,
+      height: 480,
 
-		super({
-			
-			width: 640,
-			height: 480,
-			
-			// width: '80%',
-			// height: '80%',
+      // width: '80%',
+      // height: '80%',
 
-			type: Phaser.AUTO,
-			parent: 'player',
-			antialias: false
+      type: Phaser.AUTO,
+      parent: 'player',
+      antialias: false
 
-		});		
+    })
 
-		/**
+    /**
 		 * Utility library
 		 * @property {MulleGame}	game	Main game
 		 * @property {Object}		scenes	Scene lookups
@@ -73,123 +67,111 @@ class MulleGame extends Phaser.Game {
 		 * @property {Object}		actors	Available actors
 		 * @property {function}		playAudio
 		 */
-		this.mulle = {};
+    this.mulle = {}
 
-		this.mulle.game = this;
+    this.mulle.game = this
 
-		this.mulle.debug = false;
-		this.mulle.cheats = true;
+    this.mulle.debug = false
+    this.mulle.cheats = true
 
-		this.mulle.networkEnabled = true;
+    this.mulle.networkEnabled = true
 
-		this.mulle.networkServer		= 'mulle.dongers.net:8765';
-		this.mulle.networkDevServer	= 'localhost:8765';
+    this.mulle.networkServer		= 'mulle.dongers.net:8765'
+    this.mulle.networkDevServer	= 'localhost:8765'
 
-		this.mulle.defaultLanguage = 'english';
-		// this.mulle.defaultLanguage = 'swedish';
+    this.mulle.defaultLanguage = 'english'
+    // this.mulle.defaultLanguage = 'swedish';
 
-		this.mulle.scenes = {
+    this.mulle.scenes = {
 
-			"02": "junk",
-			"03": "garage",
-			"04": "yard",
-			"05": "world",
+      '02': 'junk',
+      '03': 'garage',
+      '04': 'yard',
+      '05': 'world',
 
-			"10": "menu",
+      '10': 'menu',
 
-			"82": "mudcar",
-			"83": "treecar",
-			"84": "roadthing",
-			"85": "roaddog",
+      '82': 'mudcar',
+      '83': 'treecar',
+      '84': 'roadthing',
+      '85': 'roaddog',
 
-			"86": "solhem",
-			"87": "saftfabrik",
-			"86": "sturestortand",
-			"89": "viola",
-			"90": "dorisdigital",
-			"91": "luddelabb",
-			"92": "figgeferrum",
+      '86': 'solhem',
+      '87': 'saftfabrik',
+      '86': 'sturestortand',
+      '89': 'viola',
+      '90': 'dorisdigital',
+      '91': 'luddelabb',
+      '92': 'figgeferrum',
 
-			"93": "ocean",
-			"94": "carshow"
+      '93': 'ocean',
+      '94': 'carshow'
 
-		}
+    }
 
-		this.mulle.states = {
+    this.mulle.states = {
 
-			'boot':				BootState,
-			'load':				LoadState,
+      'boot':	BootState,
+      'load':	LoadState,
 
-			'menu':				MenuState, // 10
+      'menu':	MenuState, // 10
 
-			'junk':				JunkState, // 02
-			'garage':			GarageState, // 03
-			'yard':				YardState, // 04
-			'world':			WorldState, // 05
+      'junk':	JunkState, // 02
+      'garage':	GarageState, // 03
+      'yard':	YardState, // 04
+      'world':	WorldState, // 05
 
-			'roadthing':		RoadThingState, // 84
-			'roaddog':			RoadDogState, // 85
-			'solhem':			SolhemState, // 86
-			'saftfabrik':		SaftfabrikState,
-			'sturestortand':	StureStortandState, 
-			'figgeferrum':		FiggeFerrumState, // 92
+      'roadthing':	RoadThingState, // 84
+      'roaddog':	RoadDogState, // 85
+      'solhem':	SolhemState, // 86
+      'saftfabrik':	SaftfabrikState,
+      'sturestortand':	StureStortandState,
+      'figgeferrum':	FiggeFerrumState, // 92
 
-			'carshow':			CarShowState, // 94
+      'carshow':	CarShowState // 94
 
-		}
+    }
 
-		this.mulle.audio = {};
+    this.mulle.audio = {}
 
-		this.mulle.subtitle = new MulleSubtitle( this );
+    this.mulle.subtitle = new MulleSubtitle(this)
 
-		this.mulle.actors = {};
+    this.mulle.actors = {}
 
-		/**
+    /**
 		 * Play audio by member name
 		 * @param  {string} id
 		 * @return {Phaser.Sound} sound object
 		 */
-		this.mulle.playAudio = function( id, onStop = null ){
+    this.mulle.playAudio = function (id, onStop = null) {
+      for (let a in this.game.mulle.audio) {
+        var p = this.game.mulle.audio[a]
 
-			for( let a in this.game.mulle.audio ){
+        for (var s in p.sounds) {
+          if (p.sounds[s].extraData && id.toLowerCase() == p.sounds[s].extraData.dirName.toLowerCase()) {
+            var snd = p.play(s)
 
-				var p = this.game.mulle.audio[a];
+            if (snd && onStop) { snd.onStop.addOnce(onStop) }
 
-				for( var s in p.sounds ){
+            return snd
+          }
+        }
+      }
 
-					if( p.sounds[s].extraData && id.toLowerCase() == p.sounds[s].extraData.dirName.toLowerCase() ){
+      console.error('sound not found', id, this.game.mulle.audio)
 
-						var snd = p.play( s );
+      return false
+    }
 
-						if(snd && onStop)
-							snd.onStop.addOnce(onStop);
+    this.mulle.addAudio = function (key) {
+      if (this.game.mulle.audio[key]) return
 
-						return snd;
+      this.game.mulle.audio[key] = new MulleAudio(this.game, key + '-audio')
 
-					}
+      for (var id in this.game.mulle.audio[key].config.spritemap) {
+        this.game.mulle.audio[key].sounds[id].extraData = this.game.mulle.audio[key].config.spritemap[id].data
 
-				}
-
-			}
-
-			console.error('sound not found', id, this.game.mulle.audio);
-
-			return false;
-
-		}
-
-		this.mulle.addAudio = function( key ){
-
-			if(this.game.mulle.audio[key]) return;
-
-			this.game.mulle.audio[key] = new MulleAudio(this.game, key + '-audio');
-
-
-			for( var id in this.game.mulle.audio[key].config.spritemap ){
-
-				this.game.mulle.audio[key].sounds[id].extraData = this.game.mulle.audio[key].config.spritemap[id].data;
-
-				/*
+        /*
 				var cues = this.game.mulle.audio[key].config.spritemap[id].cue;
 
 				if( cues ){
@@ -204,239 +186,180 @@ class MulleGame extends Phaser.Game {
 
 				}
 				*/
+      }
 
-			}
+      console.debug('[audio]', 'add', this.game.mulle.audio[key])
+    }
 
-			console.debug('[audio]', 'add', this.game.mulle.audio[key]);
+    this.mulle.stopAudio = function (id) {
+      for (let a in this.game.mulle.audio) {
+        var p = this.game.mulle.audio[a]
 
-		}
+        for (var s in p.sounds) {
+          if (p.sounds[s].extraData && id == p.sounds[s].extraData.dirName) {
+            return p.stop(s)
+          }
+        }
+      }
 
-		this.mulle.stopAudio = function( id ){
+      console.error('sound not found', id)
 
-			for( let a in this.game.mulle.audio ){
+      return false
+    }
 
-				var p = this.game.mulle.audio[a];
+    this.mulle.cursor = new MulleCursor(this)
 
-				for( var s in p.sounds ){
+    this.mulle.PartsDB = {}
+    this.mulle.getPart = function (id) {
+      return this.PartsDB[id]
+    }
 
-					if( p.sounds[s].extraData && id == p.sounds[s].extraData.dirName ){
+    this.mulle.UsersDB = []
+    this.mulle.saveData = function () {
+      console.debug('SAVING DATA')
+      window.localStorage.setItem('mulle_SaveData', JSON.stringify(this.game.mulle.UsersDB))
+    }
 
-						return p.stop( s );
+    this.mulle.setData = function (key, value) {
+      this.game.mulle.UsersDB[ this.game.mulle.activeProfile ][ key ] = value
+    }
 
-					}
+    this.mulle.loadData = function () {
+      // console.debug('LOADING DATA');
 
-				}
+      this.game.mulle.UsersDB = {}
 
-			}
+      var savedata = window.localStorage.getItem('mulle_SaveData')
 
-			console.error('sound not found', id);
+      if (savedata) {
+        var data = JSON.parse(savedata)
 
-			return false;
+        // console.debug('Raw save data', data);
 
-		}
+        for (var name in data) {
+          this.game.mulle.UsersDB[name] = new MulleSave(this.game, data[name])
 
+          console.debug('[userdata]', 'loaded', name, this.game.mulle.UsersDB[name])
+        }
 
-		this.mulle.cursor = new MulleCursor( this );
+        console.debug('[userdata]', 'finish loading', this.game.mulle.UsersDB)
+      } else {
+        console.warn('[userdata]', 'empty')
+      }
+    }
 
-		this.mulle.PartsDB = {};
-		this.mulle.getPart = function( id ){
-			return this.PartsDB[id];
-		}
+    this.mulle.findFrame = function (collection, name) {
+      for (var i in collection) {
+        var a = collection[i]
+        if (a.frameData.checkFrameName(name)) return a.key
+      }
 
-		this.mulle.UsersDB = [];
-		this.mulle.saveData = function(){
-			console.debug('SAVING DATA');
-			window.localStorage.setItem('mulle_SaveData', JSON.stringify( this.game.mulle.UsersDB ) );
-		}
+      return false
+    }
 
-		this.mulle.setData = function( key, value ){
-			this.game.mulle.UsersDB[ this.game.mulle.activeProfile ][ key ] = value;
-		}
+    this.mulle.frameLookup = {}
 
-		this.mulle.loadData = function(){
+    this.mulle.findFrameById = function (id, returnFrame = false) {
+      var keys = this.game.cache.getKeys(Phaser.Cache.IMAGE)
 
-			// console.debug('LOADING DATA');
+      for (var k in keys) {
+        var img = this.game.cache.getImage(keys[k], true)
 
-			this.game.mulle.UsersDB = {};
+        var frames = img.frameData.getFrames()
 
-			var savedata = window.localStorage.getItem('mulle_SaveData');
-			
-			if( savedata ){
-				
-				var data = JSON.parse( savedata );
+        for (var f in frames) {
+          if (frames[f].id && id == frames[f].id) {
+            // this.game.mulle.frameLookup[ id ] = [img.key, frames[f].name];
 
-				// console.debug('Raw save data', data);
+            return returnFrame ? { frame: frames[f], key: img.key, name: frames[f].name } : [img.key, frames[f].name]
+          }
+        }
+      }
 
-				for( var name in data ){
+      return false
+    }
 
-					this.game.mulle.UsersDB[name] = new MulleSave( this.game, data[name] );
+    this.mulle.findDirectorMember = function (name) {
+      if (memberLookup[ name ]) {
+        return memberLookup[ name ]
+      }
 
-					console.debug('[userdata]', 'loaded', name, this.game.mulle.UsersDB[name]);
+      var keys = this.game.cache.getKeys(Phaser.Cache.IMAGE)
 
-				}
+      for (var k in keys) {
+        var img = this.game.cache.getImage(keys[k], true)
 
-				console.debug('[userdata]', 'finish loading', this.game.mulle.UsersDB);
+        var frames = img.frameData.getFrames()
 
-			}else{
+        for (var f in frames) {
+          if (frames[f].dirName === name) {
+            memberLookup[ name ] = frames[f]
 
-				console.warn('[userdata]', 'empty');
+            return frames[f]
+          }
+        }
+      }
 
-			}
+      console.error('get member fail', name)
+    }
 
-		}
+    this.mulle.getDirectorImage = function (dir, num) {
+      if (!dir || !num) {
+        // console.error('invalid parameters', dir, num);
+        return false
+      }
 
+      var l = dir + '_' + num
 
-		this.mulle.findFrame = function( collection, name ){
+      if (directorImageLookup[l]) return directorImageLookup[l]
 
-			for( var i in collection ){
-				var a = collection[i];
-				if( a.frameData.checkFrameName( name ) ) return a.key;
-			}
+      var keys = this.game.cache.getKeys(Phaser.Cache.IMAGE)
 
-			return false;
+      for (var k in keys) {
+        var img = this.game.cache.getImage(keys[k], true)
 
-		}
+        var frames = img.frameData.getFrames()
 
-		this.mulle.frameLookup = {};
+        for (var f in frames) {
+          if (frames[f].dirFile == dir && (frames[f].dirNum === num || frames[f].dirName === num)) {
+            var data = { frame: frames[f], key: img.key, name: frames[f].name }
 
-		this.mulle.findFrameById = function( id, returnFrame = false ){
-			
-			var keys = this.game.cache.getKeys( Phaser.Cache.IMAGE );
+            directorImageLookup[l] = data
 
-			for( var k in keys ){
+            return data
+          }
+        }
+      }
 
-				var img = this.game.cache.getImage( keys[k], true );
+      console.error('get image fail', dir, num)
 
-				var frames = img.frameData.getFrames();
+      return false
+    }
 
-				for( var f in frames ){
+    this.mulle.getFrameRegPoint = function (id) {
+      var f = this.game.mulle.findFrameById(id, true)
 
-					if( frames[f].id && id == frames[f].id ){
+      if (f) {
+        return f.regpoint
+      } else {
+        return false
+      }
+    }
 
-						// this.game.mulle.frameLookup[ id ] = [img.key, frames[f].name];
+    this.mulle.net = new MulleNet(this)
+  }
 
-						return returnFrame ? { frame: frames[f], key: img.key, name: frames[f].name } : [img.key, frames[f].name];
-
-					}
-
-				}
-
-			}
-
-			return false;
-
-		}
-
-		this.mulle.findDirectorMember = function( name ){
-
-			if( memberLookup[ name ] ){
-				return memberLookup[ name ];
-			}
-
-			var keys = this.game.cache.getKeys( Phaser.Cache.IMAGE );
-
-			for( var k in keys ){
-
-				var img = this.game.cache.getImage( keys[k], true );
-
-				var frames = img.frameData.getFrames();
-
-				for( var f in frames ){
-
-					if( frames[f].dirName === name ){
-
-						memberLookup[ name ] = frames[f];
-
-						return frames[f];
-
-					}
-
-				}
-
-			}
-
-			console.error('get member fail', name);
-
-		}
-
-		this.mulle.getDirectorImage = function( dir, num ){
-
-			if(!dir || !num){
-				// console.error('invalid parameters', dir, num);
-				return false;
-			}
-
-			var l = dir + '_' + num;
-
-			if(directorImageLookup[l]) return directorImageLookup[l];
-
-
-			var keys = this.game.cache.getKeys( Phaser.Cache.IMAGE );
-
-			for( var k in keys ){
-
-				var img = this.game.cache.getImage( keys[k], true );
-
-				var frames = img.frameData.getFrames();
-
-				for( var f in frames ){
-
-					if( frames[f].dirFile == dir && ( frames[f].dirNum === num || frames[f].dirName === num ) ){
-
-						var data = { frame: frames[f], key: img.key, name: frames[f].name };
-
-						directorImageLookup[l] = data;
-
-						return data;
-
-					}
-
-				}
-
-			}
-
-			console.error('get image fail', dir, num);
-
-			return false;
-
-		}
-
-
-		this.mulle.getFrameRegPoint = function( id ){
-
-			var f = this.game.mulle.findFrameById( id, true );
-
-			if(f){
-
-				return f.regpoint;
-
-			}else{
-
-				return false;
-
-			}
-
-		}
-
-		this.mulle.net = new MulleNet(this);
-
-
-	}
-
-	/**
+  /**
 	 * Setup and launch game
 	 * @return {void}
 	 */
-	setup(){
+  setup () {
+    for (var i in this.mulle.states) {
+      this.state.add(i, this.mulle.states[i])
+    }
 
-		for( var i in this.mulle.states ){
-			this.state.add( i, this.mulle.states[i] );
-		}
-
-		this.state.start('boot');
-
-	}
-
+    this.state.start('boot')
+  }
 }
 
-export default MulleGame;
+export default MulleGame

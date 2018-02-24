@@ -4,78 +4,64 @@
  */
 
 class MulleNet {
+  constructor (game) {
+    this.game = game
+  }
 
-	constructor(game){
+  connect () {
+    if (this.connected) {
+      console.error('Already connected')
+      return false
+    }
 
-		this.game = game;
-	
-	}
+    var address = process.env.NODE_ENV !== 'production' ? this.game.mulle.networkDevServer : this.game.mulle.networkServer
 
-	connect(){
+    console.log('[network]', 'connect', address)
+    this.socket = new WebSocket('ws://' + address)
 
-		if( this.connected ){
-			console.error('Already connected');
-			return false;
-		}
+    // launch on connect
+    this.socket.addEventListener('open', (event) => {
+      console.log('[network]', 'connected')
+    })
 
-		var address = process.env.NODE_ENV !== "production" ? this.game.mulle.networkDevServer : this.game.mulle.networkServer;
-		
-		console.log('[network]', 'connect', address);
-		this.socket = new WebSocket( "ws://" + address );
+    this.socket.addEventListener('close', (event) => {
+      console.warn('[network]', 'disconnected', event)
+      this.socket = null
+    })
 
-		// launch on connect
-		this.socket.addEventListener('open', (event) => {
-			console.log('[network]', 'connected');
-		});
+    this.socket.addEventListener('message', (msg) => {
+      var msg = JSON.parse(event.data)
 
-		this.socket.addEventListener('close', (event) => {
-			console.warn('[network]', 'disconnected', event);
-			this.socket = null;
-		});
+      if (msg.error) {
+        alert(msg.error)
+      }
 
-		this.socket.addEventListener('message', (msg) => {
+      if (msg.message) {
+        alert(msg.message)
+      }
+    })
+  }
 
-			var msg = JSON.parse( event.data );
+  disconnect () {
+    this.socket.close()
+  }
 
-			if( msg.error ){
-				alert( msg.error );
-			}
+  send (data) {
+    if (!this.socket) return false
 
-			if( msg.message ){
-				alert( msg.message );
-			}
+    if (this.socket.readyState !== WebSocket.OPEN) {
+      console.debug('[network]', 'offline', data)
+      return false
+    }
 
-		});
+    console.debug('[network]', 'send', data)
 
-	}
+    this.socket.send(JSON.stringify(data))
+  }
 
-	disconnect(){
-
-		this.socket.close();
-
-	}
-
-	send( data ){
-
-		if(!this.socket) return false;
-
-		if( this.socket.readyState !== WebSocket.OPEN ){
-			console.debug('[network]', 'offline', data);
-			return false;
-		}
-
-		console.debug('[network]', 'send', data);
-
-		this.socket.send( JSON.stringify( data ) );
-
-	}
-
-	get connected(){
-
-		return this.socket && this.socket.readyState === WebSocket.OPEN;
-
-	}
-
+  get connected () {
+    return this.socket && this.socket.readyState === WebSocket.OPEN
+  }
 }
 
-export default MulleNet;
+export default MulleNet

@@ -1,39 +1,27 @@
-"use strict";
+'use strict'
 
-var MapObject = {};
+var MapObject = {}
 
-MapObject.onEnterInner = function( car ){
+MapObject.onEnterInner = function (car) {
+  console.log('enter hill, custom object', this)
 
-	console.log('enter hill, custom object', this);
+  if (this.opt.HillType == '#SmallHill') {
+    if (this.game.mulle.user.Car.getQuickProperty('strength') <= this.game.mulle.user.Car.criteria.SmallHill) {
+      console.log('small hill')
 
+      this.soundPlay = this.game.mulle.playAudio(this.def.Sounds[0])
+    } else {
 
-	if( this.opt.HillType == '#SmallHill' ){
+    }
+  } else {
+    if (this.game.mulle.user.Car.getQuickProperty('strength') <= this.game.mulle.user.Car.criteria.BigHill) {
+      console.log('big hill')
 
-		if( this.game.mulle.user.Car.getQuickProperty('strength') <= this.game.mulle.user.Car.criteria.SmallHill ){
-			
-			console.log('small hill');
+      this.soundPlay = this.game.mulle.playAudio(this.def.Sounds[1])
+    } else {
 
-			this.soundPlay = this.game.mulle.playAudio( this.def.Sounds[0] );
-		
-		}else{
+    }
+  }
+}
 
-		}
-
-	}else{
-
-		if( this.game.mulle.user.Car.getQuickProperty('strength') <= this.game.mulle.user.Car.criteria.BigHill ){
-			
-			console.log('big hill');
-
-			this.soundPlay = this.game.mulle.playAudio( this.def.Sounds[1] );
-		
-		}else{
-
-		}
-
-	}
-	
-
-};
-
-export default MapObject;
+export default MapObject

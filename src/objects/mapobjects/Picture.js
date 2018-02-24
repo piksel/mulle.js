@@ -1,32 +1,26 @@
-"use strict";
+'use strict'
 
 // import MulleSprite from 'objects/sprite';
 
-var MapObject = {};
+var MapObject = {}
 
+MapObject.onCreate = function () {
+  this.setDirectorMember(this.def.FrameList.normal[0])
 
-MapObject.onCreate = function(){
+  // this.addAnimation('idle', [ [ 'CDDATA.CXT', this.def.FrameList.normal[0] ] ], 1, true);
+  // this.animations.play('idle');
 
-	this.setDirectorMember(this.def.FrameList.normal[0]);
+  // console.log('picture', this);
 
-	// this.addAnimation('idle', [ [ 'CDDATA.CXT', this.def.FrameList.normal[0] ] ], 1, true);
-	// this.animations.play('idle');
+  // this.bringToTop();
 
-	// console.log('picture', this);
+  if (this.SpriteInfo.Over) {
+    this.bringToTop()
+  }
+}
 
-	// this.bringToTop();
+MapObject.onEnterInner = function () {
 
-	if( this.SpriteInfo.Over ){
+}
 
-		this.bringToTop();
-
-	}
-
-};
-
-
-MapObject.onEnterInner = function(){
-
-};
-
-export default MapObject;
+export default MapObject

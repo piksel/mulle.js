@@ -1,163 +1,133 @@
 class MulleCursor {
+  constructor (game) {
+    this.game = game
 
-	constructor( game ) {
+    this.cursorName = null
 
-		this.game = game;
+    this.activator = null
 
-		this.cursorName = null;
+    this.default = 'Standard'
 
-		this.activator = null;
+    this._current = null
 
-		this.default = 'Standard';
+    this._previous = null
 
-		this._current = null;
+    this._history = []
 
-		this._previous = null;
+    // this.bindings = { over: [], out: [] };
+  }
 
-		this._history = [];
+  get current () {
+    return this._current
+  }
 
-		// this.bindings = { over: [], out: [] };
+  set current (val) {
+    // this.game.canvas.className = 'C_' + ( val ? val : ( this._previous ? this._previous : this.default ) );
 
-	}
+    // this._previous = this._current;
 
-	get current(){
-		return this._current;
-	}
+    if (!val) {
+      this._history.splice(-1, 1)
+    } else {
+      this._history.push(val)
+    }
 
-	set current(val){
+    this.refresh()
 
-		
-		
-		// this.game.canvas.className = 'C_' + ( val ? val : ( this._previous ? this._previous : this.default ) );
-		
-		// this._previous = this._current;
+    this._current = val
 
-		if(!val){
-			this._history.splice(-1, 1);
-		}else{
-			this._history.push( val );
-		}
+    // console.debug('[cursor]', 'current', val, this._history);
+  }
 
-		this.refresh();
+  reset () {
+    this._history = []
+    this._current = null
+    this.refresh()
+  }
 
-		this._current = val;
+  add (name) {
+    if (this._history.indexOf(name) === -1) this._history.push(name)
 
-		// console.debug('[cursor]', 'current', val, this._history);
+    this.refresh()
+  }
 
-	}
+  remove (name) {
+    var i = this._history.indexOf(name) !== -1
 
-	reset(){
-		this._history = [];
-		this._current = null;
-		this.refresh();
-	}
+    if (i) this._history.splice(i, 1)
 
-	add( name ){
+    this.refresh()
+  }
 
-		if( this._history.indexOf( name ) === -1 ) this._history.push( name );
+  refresh () {
+    if (this._history.length > 0) {
+      this.game.canvas.className = 'C_' + this._history[ this._history.length - 1]
+    } else {
+      this.game.canvas.className = 'C_' + this.default
+    }
+  }
 
-		this.refresh();
+  setCursor (activator, name) {
+    if (name) {
+      console.debug('[cursor]', 'set', activator, name)
 
-	}
+      this.activator = activator
 
-	remove( name ){
+      this.cursorName = name
 
-		var i = this._history.indexOf( name ) !== -1;
+      this.game.canvas.className = 'cursor-' + this.cursorName
+    } else {
+      console.debug('[cursor]', 'default', activator)
 
-		if( i ) this._history.splice( i, 1 );
+      this.activator = null
 
-		this.refresh();
+      this.cursorName = null
 
-	}
+      this.game.canvas.className = ''
+    }
+  }
 
-	refresh(){
+  addHook (obj, callback) {
+    // var over =
+    obj.events.onInputOver.add(this.cursorOver, this, null, callback)
 
-		if( this._history.length > 0 ){
-			this.game.canvas.className = 'C_' + this._history[ this._history.length - 1];
-		}else{
-			this.game.canvas.className = 'C_' + this.default;
-		}
+    // var out =
+    obj.events.onInputOut.add(this.cursorOut, this, null, callback)
 
-	}
+    // this.bindings.over.push(over);
 
-	setCursor( activator, name ){
+    // this.bindings.out.push(out);
 
-		if(name){
+    // console.log( this.bindings );
+  }
 
-			console.debug('[cursor]', 'set', activator, name);
+  cursorOver (obj, pointer, callback) {
+    // console.log( 'cursorOver', obj, pointer, d );
 
-			this.activator = activator;
+    if (callback) {
+      var ret = callback(obj, 'over', pointer)
 
-			this.cursorName = name;
+      if (ret) {
+        this.setCursor(obj, ret)
+      } else {
+        this.setCursor(obj, null)
+      }
+    }
+  }
 
-			this.game.canvas.className = 'cursor-' + this.cursorName;
+  cursorOut (obj, pointer, callback) {
+    // console.log( 'cursorOut', obj, pointer, d );
 
-		}else{
+    if (callback) {
+      var ret = callback(obj, 'out', pointer)
 
-			console.debug('[cursor]', 'default', activator);
-
-			this.activator = null;
-
-			this.cursorName = null;
-
-			this.game.canvas.className = '';
-
-		}
-
-	}
-
-	addHook( obj, callback ){
-
-		// var over = 
-		obj.events.onInputOver.add( this.cursorOver, this, null, callback );
-
-		// var out = 
-		obj.events.onInputOut.add( this.cursorOut, this, null, callback );
-
-		// this.bindings.over.push(over);
-
-		// this.bindings.out.push(out);
-
-		// console.log( this.bindings );
-
-	}
-
-	cursorOver( obj, pointer, callback ){
-		
-		// console.log( 'cursorOver', obj, pointer, d );
-		
-		if(callback){
-			
-			var ret = callback( obj, 'over', pointer );
-			
-			if(ret){
-				this.setCursor(obj, ret);
-			}else{
-				this.setCursor(obj, null);
-			}
-
-		}
-
-	}
-
-	cursorOut( obj, pointer, callback ){
-		
-		// console.log( 'cursorOut', obj, pointer, d );
-		
-		if(callback){
-			
-			var ret = callback( obj, 'out', pointer );
-
-			if(ret){
-				this.setCursor(obj, ret);
-			}else{
-				this.setCursor(obj, null);
-			}
-
-		}
-
-	}
-
+      if (ret) {
+        this.setCursor(obj, ret)
+      } else {
+        this.setCursor(obj, null)
+      }
+    }
+  }
 }
 
-export default MulleCursor;
+export default MulleCursor

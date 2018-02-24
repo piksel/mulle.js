@@ -3,80 +3,72 @@
  * @module WorldState
  */
 
-import MulleState from 'scenes/base';
+import MulleState from 'scenes/base'
 
-import MulleSprite from 'objects/sprite';
-import MulleDriveCar from 'objects/drivecar';
-import MulleToolbox from 'objects/toolbox';
+import MulleSprite from 'objects/sprite'
+import MulleDriveCar from 'objects/drivecar'
+import MulleToolbox from 'objects/toolbox'
 
-import MulleMapObject from 'objects/mapobject';
+import MulleMapObject from 'objects/mapobject'
 
 // import MulleMapObject.Hill from 'objects/mapobjects/30.hill';
 
-import MulleBuildCar from 'objects/buildcar';
-import MulleMPCar from 'objects/mpcar';
+import MulleBuildCar from 'objects/buildcar'
+import MulleMPCar from 'objects/mpcar'
 
-import MulleWorld from 'struct/world';
+import MulleWorld from 'struct/world'
 
 /**
  * World scene, extension of phaser state
  * @extends Phaser.State
  */
 class WorldState extends MulleState {
+  preload () {
+    super.preload()
 
-	preload(){
+    this.game.load.pack('driving', 'assets/driving.json', null, this)
 
-		super.preload();
+    this.game.load.pack('map', 'assets/map.json', null, this)
 
-		this.game.load.pack('driving', 'assets/driving.json', null, this);
-		
-		this.game.load.pack('map', 'assets/map.json', null, this);
+    this.game.load.atlas('topography', 'assets/topography/topography.png', 'assets/topography/topography.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH)
+  }
 
-		this.game.load.atlas('topography', 'assets/topography/topography.png', 'assets/topography/topography.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+  saveSession (obj) {
+    console.log('save session')
 
-	}
+    this.game.mulle.lastSession = {
+      mapCoordinate: this.mapCoordinate.clone(),
+      carPosition: this.driveCar.position.clone(),
+      carDirection: this.driveCar.direction,
+      carFuel: this.driveCar.fuelCurrent,
+      carMaxFuel: this.driveCar.fuelMax
+    }
 
-	saveSession( obj ){
+    if (obj) this.game.mulle.lastSession.mapObject = obj.id
+  }
 
-		console.log('save session');
+  loadSession () {
+    // console.log('load session', this.game.mulle.lastCarPosition );
 
-		this.game.mulle.lastSession = {
-			mapCoordinate: this.mapCoordinate.clone(),
-			carPosition: this.driveCar.position.clone(),
-			carDirection: this.driveCar.direction,
-			carFuel: this.driveCar.fuelCurrent,
-			carMaxFuel: this.driveCar.fuelMax
-		};
+    this.changeMap(this.game.mulle.lastSession.mapCoordinate, true)
 
-		if(obj) this.game.mulle.lastSession.mapObject = obj.id;
+    if (this.game.mulle.lastSession.mapObject) {
+      this.mapObjects.forEach((o) => {
+        if (o.id == this.game.mulle.lastSession.mapObject) {
+          console.log('disable object', o.id)
+          o.enteredInner = true
+          o.enteredOuter = true
+        }
+      })
+    }
 
-	}
+    this.driveCar.position.set(this.game.mulle.lastSession.carPosition.x, this.game.mulle.lastSession.carPosition.y)
 
-	loadSession(){
+    this.driveCar.direction = this.game.mulle.lastSession.carDirection
 
-		// console.log('load session', this.game.mulle.lastCarPosition );
-		
-		this.changeMap( this.game.mulle.lastSession.mapCoordinate, true );
-		
-		if(this.game.mulle.lastSession.mapObject){
+    this.driveCar.fuelCurrent = this.game.mulle.lastSession.carFuel
 
-			this.mapObjects.forEach( (o) => {
-				if( o.id == this.game.mulle.lastSession.mapObject ){
-					console.log('disable object', o.id);
-					o.enteredInner = true;
-					o.enteredOuter = true;
-				}
-			});
-
-		}
-
-		this.driveCar.position.set( this.game.mulle.lastSession.carPosition.x, this.game.mulle.lastSession.carPosition.y );
-		
-		this.driveCar.direction = this.game.mulle.lastSession.carDirection;
-
-		this.driveCar.fuelCurrent = this.game.mulle.lastSession.carFuel;
-
-		/*
+    /*
 		if( this.game.mulle.lastSession.SetWhenDone ){
 
 			if( this.game.mulle.lastSession.SetWhenDone.Cache ){
@@ -91,712 +83,606 @@ class WorldState extends MulleState {
 
 		}
 		*/
+  }
 
-	}
+  removeSession () {
+    this.game.mulle.lastSession = null
+  }
 
-	removeSession(){
-		this.game.mulle.lastSession = null;
-	}
+  changeMap (pos, absolute = false) {
+    console.log('Change map', pos)
 
-	changeMap( pos, absolute = false ){
+    // console.log( pos, absolute ? 'absolute' : 'relative' );
 
-		console.log('Change map', pos);
+    var newY = pos.y
+    var newX = pos.x
 
-		// console.log( pos, absolute ? 'absolute' : 'relative' );
+    if (!absolute) {
+      newY += this.mapCoordinate.y
+      newX += this.mapCoordinate.x
+    }
 
-		var newY = pos.y;
-		var newX = pos.x;
+    // var mapId = this.game.mulle.WorldsDB[ this.activeWorld ].map[ newY - 1 ][ newX - 1 ];
 
-		if(!absolute){
-			newY += this.mapCoordinate.y;
-			newX += this.mapCoordinate.x;
-		}
+    // var mapData = this.game.mulle.MapsDB[ mapId ];
 
-		// var mapId = this.game.mulle.WorldsDB[ this.activeWorld ].map[ newY - 1 ][ newX - 1 ];
+    var map = this.activeWorld.getMap(newX, newY)
 
-		// var mapData = this.game.mulle.MapsDB[ mapId ];
+    console.log('map coordinates', newX, newY)
 
-		var map = this.activeWorld.getMap( newX, newY );
+    // console.log('main map', map);
 
-		console.log('map coordinates', newX, newY );
+    var mapId 		= map.MapId
+    var mapName 	= map.MapImage
+    var topName 	= map.Topology
 
-		// console.log('main map', map);
+    // console.log('Map ID', mapId);
+    // console.log('Map data', mapData);
+    // console.log('Map name', mapName);
+    // console.log('Topology name', topName);
 
-		var mapId 		= map.MapId;
-		var mapName 	= map.MapImage;
-		var topName 	= map.Topology;
+    this.mapSprite.setDirectorMember('CDDATA.CXT', mapName)
 
-		// console.log('Map ID', mapId);
-		// console.log('Map data', mapData);
-		// console.log('Map name', mapName);
-		// console.log('Topology name', topName);
+    if (!this.topSprite) {
+      this.topSprite = this.game.add.sprite(-320, -240, 'topography', topName)
+    } else {
+      this.topSprite.frameName = topName
+    }
 
-		this.mapSprite.setDirectorMember( 'CDDATA.CXT', mapName );
+    this.topSprite.smoothed = false
 
+    this.topBitmap.draw(this.topSprite, 0, 0)
+    this.topBitmap.update()
 
-		if(!this.topSprite){
-			this.topSprite = this.game.add.sprite( -320, -240, 'topography', topName);
-		}else{
-			this.topSprite.frameName = topName;
-		}
+    for (var i = this.mapObjects.children.length; i >= 0; i--) {
+      var c = this.mapObjects.children[i]
+      if (!c || !c.def) continue
+      // console.log('remove loop', c);
+      this.mapObjects.remove(c, true)
+    }
 
-		this.topSprite.smoothed = false;
+    if (map.objects) {
+      map.objects.forEach((v) => {
+        let objectId = v[0]
+        let objectPos = Phaser.Point.parse(v[1])
+        let objectOpt = v[2]
 
+        if (this.game.mulle.ObjectsDB[ objectId ].type == '#rdest') {
+          // console.log('mapobject rdest', objectId);
 
-		this.topBitmap.draw( this.topSprite, 0, 0 );
-		this.topBitmap.update();
+          var currentRDest = this.activeWorld.rDests[ objectId ]
 
+          if (!this.mapCoordinate.equals(currentRDest)) {
+            console.debug('[rdest]', 'inactive', objectId, currentRDest.x, currentRDest.y)
 
-		for (var i = this.mapObjects.children.length; i >= 0; i--){
-			var c = this.mapObjects.children[i];
-			if(!c || !c.def) continue;
-			// console.log('remove loop', c);
-			this.mapObjects.remove(c, true);
-		}
-		
-		if( map.objects ){
-	
-			map.objects.forEach( (v) => {
-				
-				let objectId = v[0];
-				let objectPos = Phaser.Point.parse( v[1] );
-				let objectOpt = v[2];
+            return
+          }
+        }
 
-				if( this.game.mulle.ObjectsDB[ objectId ].type == '#rdest' ){
+        let mapObject = new MulleMapObject(this.game, objectId, objectPos, objectOpt)
 
-					// console.log('mapobject rdest', objectId);
+        mapObject.doCheck()
 
-					var currentRDest = this.activeWorld.rDests[ objectId ];
+        this.mapObjects.add(mapObject)
 
-					if( !this.mapCoordinate.equals( currentRDest ) ){
+        if (mapObject.def.type == '#Correct') {
+          console.debug('CORRECT', mapObject)
 
-						console.debug( '[rdest]', 'inactive', objectId, currentRDest.x, currentRDest.y );
+          var dist = this.driveCar.position.distance(mapObject.position)
+          var hitInner = dist <= mapObject.InnerRadius / 2
 
-						return;
+          if (hitInner) {
+            console.debug('CORRECT HIT', mapObject)
 
-					}
+            this.driveCar.position.set(mapObject.position.x, mapObject.position.y)
+          }
+        }
+      })
 
-				}
+      // console.log( 'mapObjects', this.mapObjects );
+    }
 
-				let mapObject = new MulleMapObject( this.game, objectId, objectPos, objectOpt );
+    this.mapCoordinate = new Phaser.Point(newX, newY)
 
-				mapObject.doCheck();
+    this.mapId = mapId
 
-				this.mapObjects.add(mapObject);
+    this.game.mulle.net.send({ map: mapId })
 
-				if( mapObject.def.type == '#Correct' ){
+    // console.log('New coordinates', this.mapCoordinate);
 
-					console.debug('CORRECT', mapObject);
+    // console.log('%cMap changed', 'font-size: large');
+  }
 
-					var dist = this.driveCar.position.distance( mapObject.position );
-					var hitInner = dist <= mapObject.InnerRadius/2;
+  create () {
+    super.create()
 
-					if( hitInner ){
+    this.topBitmap = null
+    this.topSprite = null
+    this.mapSprite = null
+    this.mapObjects = null
+    this.driveCar = null
 
-						console.debug('CORRECT HIT', mapObject);
+    this.activeWorld = null
 
-						this.driveCar.position.set( mapObject.position.x, mapObject.position.y );
+    this.game.mulle.addAudio('driving')
 
-					}
+    this.game.physics.startSystem(Phaser.Physics.ARCADE)
 
-				}
+    // hit bitmap
+    this.topBitmap = this.game.make.bitmapData(316, 198)
 
-			});
+    // map sprite
+    this.mapSprite = new MulleSprite(this.game, 320, 200)
+    this.mapSprite.inputEnabled = true
+    this.mapSprite.hoverPoint = new Phaser.Point(0, 0)
+    this.game.add.existing(this.mapSprite)
 
-			// console.log( 'mapObjects', this.mapObjects );
-			
-		}
+    // map objects
+    this.mapObjects = this.game.add.group()
 
-		this.mapCoordinate = new Phaser.Point(newX, newY);
+    this.activeWorld = new MulleWorld(this.game, 'Da Hood') // this.game.mulle.WorldsDB["Da Hood"];
+    this.activeWorld.fromJSON(this.game.mulle.WorldsDB['Da Hood'])
 
-		this.mapId = mapId;
+    this.activeWorld.calcRandomDestinations()
 
-		this.game.mulle.net.send( { map: mapId } );
+    this.activeWorld.randomizeDestinations()
 
-		// console.log('New coordinates', this.mapCoordinate);
+    if (this.game.mulle.lastSession) {
+      this.driveCar = new MulleDriveCar(this.game)
+      this.driveCar.topology = this.topBitmap
+      this.driveCar.state = this
 
-		// console.log('%cMap changed', 'font-size: large');
+      this.loadSession()
+      this.removeSession()
 
-	}
+      // this.game.add.existing( this.driveCar );
+      this.mapObjects.add(this.driveCar)
+    } else {
+      this.mapCoordinate = this.activeWorld.StartMap.clone()
 
-	create(){
+      // car
+      this.driveCar = new MulleDriveCar(this.game)
+      this.driveCar.setCoordinate(this.activeWorld.StartCoordinate)
+      this.driveCar.setDirection(this.activeWorld.StartDirection)
+      this.driveCar.topology = this.topBitmap
+      this.driveCar.state = this
+      // this.game.add.existing( this.driveCar );
+      this.mapObjects.add(this.driveCar)
 
-		super.create();
+      this.changeMap(this.mapCoordinate, true)
+    }
 
-		this.topBitmap = null;
-		this.topSprite = null;
-		this.mapSprite = null;
-		this.mapObjects = null;
-		this.driveCar = null;
+    this.spriteDashboard = new MulleSprite(this.game, 320, 440)
+    this.spriteDashboard.setDirectorMember('05.DXR', 25)
+    this.game.add.existing(this.spriteDashboard)
 
-		this.activeWorld = null;
+    var fuelFrames = []
+    for (var i = 27; i < 27 + 16; i++) {
+      fuelFrames.push(['05.DXR', i])
+    }
 
-		this.game.mulle.addAudio('driving');
+    this.spriteFuelNeedle = new MulleSprite(this.game, 491, 447)
+    this.spriteFuelNeedle.setDirectorMember('05.DXR', 27)
+    this.spriteFuelNeedle.addAnimation('fuel', fuelFrames, 10, true)
+    this.spriteFuelNeedle.animations.stop('fuel')
+    this.game.add.existing(this.spriteFuelNeedle)
 
-		this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    // console.log('fuel needle animations', this.spriteFuelNeedle.animations);
 
+    this.spriteSpeedometer = new MulleSprite(this.game, 99, 446)
+    this.spriteSpeedometer.setDirectorMember('05.DXR', 46)
+    this.game.add.existing(this.spriteSpeedometer)
 
-		// hit bitmap
-		this.topBitmap = this.game.make.bitmapData( 316, 198 );
+    var spdMask = this.game.add.graphics(0, 0)
+    spdMask.beginFill(0xffffff)
+    spdMask.drawRect(88, 0, 300, 480)
 
-		// map sprite
-		this.mapSprite = new MulleSprite( this.game, 320, 200 );
-		this.mapSprite.inputEnabled = true;
-		this.mapSprite.hoverPoint = new Phaser.Point(0, 0);
-		this.game.add.existing(this.mapSprite);
+    this.spriteSpeedometer.mask = spdMask
+    this.lastFuelAmount = 0
 
-		// map objects
-		this.mapObjects = this.game.add.group();
+    // toolbox, manual
+    this.toolbox = new MulleToolbox(this.game, 659, 439)
+    this.game.add.existing(this.toolbox)
 
-		
-		this.activeWorld = new MulleWorld( this.game, 'Da Hood' ); // this.game.mulle.WorldsDB["Da Hood"];
-		this.activeWorld.fromJSON( this.game.mulle.WorldsDB['Da Hood'] );
+    this.toolbox.showToolbox = () => {
+      console.log('show', this)
 
-		this.activeWorld.calcRandomDestinations();
+      this.popupMenu = new MulleSprite(this.game, 320, 200)
+      this.popupMenu.setDirectorMember('05.DXR', 53)
+      this.game.add.existing(this.popupMenu)
 
-		this.activeWorld.randomizeDestinations();
+      var rectList = {
+        Steering:	[116, 114, 197, 244],
+        Home:	[216, 116, 281, 249],
+        Diploma:	[316, 127, 368, 264],
+        quit:	[390, 125, 460, 266],
+        Cancel:	[470, 255, 528, 365]
+      }
 
+      var soundList = {
+        Home:	'09d006v0',
+        Cancel:	'09d004v0',
+        Steering:	'09d005v0',
+        quit:	'09d003v0',
+        Diploma:	'09d002v0'
+      }
 
-		if( this.game.mulle.lastSession ){
+      var currentAudio
 
-			this.driveCar = new MulleDriveCar( this.game );
-			this.driveCar.topology = this.topBitmap;
-			this.driveCar.state = this;
-			
+      var funcList = {
+        Home: () => {
+          this.game.state.start('yard')
+        },
+        Cancel: () => {
+          this.toolbox.toggleToolbox(this.toolbox)
+        },
+        quit: () => {
+          this.game.state.start('menu')
+        }
+      }
 
-			this.loadSession();
-			this.removeSession();
+      this.popupMenuButtons = game.add.group()
 
-			// this.game.add.existing( this.driveCar );
-			this.mapObjects.add(this.driveCar);
+      for (let n in rectList) {
+        let r = rectList[n]
 
-		}else{
+        let b = new Phaser.Button(this.game, r[0], r[1] - 40)
+        b.width = r[2] - r[0]
+        b.height = r[3] - r[1]
 
-			this.mapCoordinate = this.activeWorld.StartMap.clone();
+        b.onInputOver.add(() => {
+          if (currentAudio) currentAudio.stop()
+          currentAudio = this.game.mulle.playAudio(soundList[n])
+        })
 
-			
-			
-			// car
-			this.driveCar = new MulleDriveCar( this.game );
-			this.driveCar.setCoordinate( this.activeWorld.StartCoordinate );
-			this.driveCar.setDirection( this.activeWorld.StartDirection );
-			this.driveCar.topology = this.topBitmap;
-			this.driveCar.state = this;
-			// this.game.add.existing( this.driveCar );
-			this.mapObjects.add(this.driveCar);
+        b.onInputDown.add(() => {
+          if (currentAudio) currentAudio.stop()
+          funcList[n]()
+        })
 
-			this.changeMap( this.mapCoordinate, true ); 
+        this.popupMenuButtons.addChild(b)
+      }
 
-		}
+      this.driveCar.enabled = false
+      this.driveCar.engineAudio.stop()
 
-		this.spriteDashboard = new MulleSprite( this.game, 320, 440 );
-		this.spriteDashboard.setDirectorMember('05.DXR', 25);
-		this.game.add.existing(this.spriteDashboard);
+      return true
+    }
 
+    this.toolbox.hideToolbox = () => {
+      console.log('hide', this)
 
-		var fuelFrames = [];
-		for( var i = 27; i < 27 + 16; i++ ){
-			fuelFrames.push(['05.DXR', i]);
-		}
+      this.popupMenu.destroy()
 
-		this.spriteFuelNeedle = new MulleSprite( this.game, 491, 447 );
-		this.spriteFuelNeedle.setDirectorMember('05.DXR', 27);
-		this.spriteFuelNeedle.addAnimation('fuel', fuelFrames, 10, true);
-		this.spriteFuelNeedle.animations.stop('fuel');
-		this.game.add.existing(this.spriteFuelNeedle);
+      this.popupMenuButtons.destroy()
 
-		// console.log('fuel needle animations', this.spriteFuelNeedle.animations);
+      this.driveCar.enabled = true
 
+      if (this.driveCar.engineAudio) this.driveCar.engineAudio.play()
 
-		this.spriteSpeedometer = new MulleSprite( this.game, 99, 446 );
-		this.spriteSpeedometer.setDirectorMember('05.DXR', 46);
-		this.game.add.existing(this.spriteSpeedometer);
+      return true
+    }
 
-		var spdMask = this.game.add.graphics(0, 0);
-		spdMask.beginFill(0xffffff);
-		spdMask.drawRect(88, 0, 300, 480);
-		
-		this.spriteSpeedometer.mask = spdMask;
-		this.lastFuelAmount = 0;
+    // networking
+    if (this.game.mulle.net.connected) {
+      this.networkTicks = 4
 
+      this.networkListener = this.networkUpdate.bind(this)
 
-		// toolbox, manual
-		this.toolbox = new MulleToolbox( this.game, 659, 439 );
-		this.game.add.existing(this.toolbox);
+      this.game.mulle.net.socket.addEventListener('message', this.networkListener)
 
-		this.toolbox.showToolbox = () => {
+      this.netLoop = this.game.time.events.loop(Phaser.Timer.SECOND / this.networkTicks, this.networkSend, this)
+      this.clients = {}
+      this.clientCars = this.game.add.group()
 
-			console.log('show', this);
+      this.chatInput = document.createElement('input')
+      this.chatInput.style.position = 'absolute'
+      this.chatInput.style.bottom = '18%'
+      this.chatInput.style.left = '1%'
+      this.chatInput.className = 'chatInput'
+      this.chatInput.maxLength = 140
 
-			this.popupMenu = new MulleSprite( this.game, 320, 200 );
-			this.popupMenu.setDirectorMember('05.DXR', 53);
-			this.game.add.existing(this.popupMenu);
+      this.chatInput.addEventListener('keyup', (e) => {
+        if (e.keyCode == 13) {
+          this.game.mulle.net.send({
+            msg: this.chatInput.value
+          })
 
-			var rectList = {
-				Steering:	[116, 114, 197, 244],
-				Home:		[216, 116, 281, 249],
-				Diploma:	[316, 127, 368, 264],
-				quit:		[390, 125, 460, 266],
-				Cancel:		[470, 255, 528, 365]
-			};
+          this.chatInput.value = ''
+        }
+      })
 
-			var soundList = {
-				Home:		"09d006v0",
-				Cancel:		"09d004v0",
-				Steering:	"09d005v0",
-				quit:		"09d003v0",
-				Diploma:	"09d002v0"
-			}
+      document.getElementById('player').appendChild(this.chatInput)
 
-			var currentAudio;
+      this.chatLog = []
 
-			var funcList = {
-				Home: () => {
-					this.game.state.start( 'yard' );
-				},
-				Cancel: () => {
-					this.toolbox.toggleToolbox( this.toolbox );
-				},
-				quit: () => {
-					this.game.state.start( 'menu' );
-				}
-			};			
+      this.chatHistory = new Phaser.Text(this.game, 0, 0, '', {
 
-			this.popupMenuButtons = game.add.group();
+        font: '11px arial',
+        fill: '#ffffff',
+        // backgroundColor: 'rgba(0,0,0,.5)',
 
-			for( let n in rectList ){
-				
-				let r = rectList[n];
-				
-				let b = new Phaser.Button(this.game, r[0], r[1] - 40);
-				b.width = r[2]-r[0];
-				b.height = r[3]-r[1];
+        stroke: '#000000',
+        strokeThickness: 2,
 
-				b.onInputOver.add(() => {
-					if(currentAudio) currentAudio.stop();
-					currentAudio = this.game.mulle.playAudio( soundList[n] );
-				});
+        boundsAlignH: 'left',
+        boundsAlignV: 'bottom'
 
-				b.onInputDown.add(() => {
-					if(currentAudio) currentAudio.stop();
-					funcList[n]();
-				});
+      })
 
-				this.popupMenuButtons.addChild(b);
+      this.chatHistory.lineSpacing = -5
 
-			}
+      this.chatHistory.setTextBounds(5, 290, 300, 80)
+      // this.chatHistory.textBounds = new Phaser.Rectangle( 0, 0, 300, 100 );
 
-			this.driveCar.enabled = false;
-			this.driveCar.engineAudio.stop();
+      this.game.add.existing(this.chatHistory)
+    }
 
-			return true;
+    // cheats
+    if (this.game.mulle.cheats) {
+      for (let y = 0; y < this.activeWorld.map.length; y++) {
+        let row = document.createElement('div')
 
-		};
+        for (let x = 0; x < this.activeWorld.map[y].length; x++) {
+          let m = this.activeWorld.map[y][x]
 
-		this.toolbox.hideToolbox = () => {
+          let b = document.createElement('button')
+          b.innerHTML = m.MapId
+          b.className = 'button'
 
-			console.log('hide', this);
+          b.addEventListener('click', (e) => {
+            this.changeMap(new Phaser.Point(x + 1, y + 1), true)
+          })
 
-			this.popupMenu.destroy();
+          row.appendChild(b)
+        }
 
-			this.popupMenuButtons.destroy();
+        document.getElementById('cheats').appendChild(row)
+      }
+    }
+  }
 
-			this.driveCar.enabled = true;
-			
-			if(this.driveCar.engineAudio) this.driveCar.engineAudio.play();
+  networkRefresh () {
+    this.clientCars.killAll(true)
 
-			return true;
+    // console.log('network refresh', this.clients);
 
-		};
+    for (var id in this.clients) {
+      var p = new MulleMPCar(this.game)
 
-		// networking
-		if( this.game.mulle.net.connected ){
+      p.position.set(this.clients[id].x, this.clients[id].y)
 
-			this.networkTicks = 4;
+      p.updateImage()
 
-			this.networkListener = this.networkUpdate.bind(this);
+      if (this.clients[id].n) {
+        p.nametag.text = this.clients[id].n
+      }
 
-			this.game.mulle.net.socket.addEventListener('message', this.networkListener );
+      p.inputEnabled = true
+      p.input.useHandCursor = true
+      p.events.onInputDown.add(() => {
+        this.driveCar.enabled = false
 
-			this.netLoop = this.game.time.events.loop(Phaser.Timer.SECOND / this.networkTicks, this.networkSend, this);
-			this.clients = {};
-			this.clientCars = this.game.add.group();
+        var showcar = new MulleBuildCar(this.game, 320, 240, this.clients[id].p, true, false)
+        this.game.add.existing(showcar)
 
-			this.chatInput = document.createElement('input');
-			this.chatInput.style.position = 'absolute';
-			this.chatInput.style.bottom = '18%';
-			this.chatInput.style.left = '1%';
-			this.chatInput.className = 'chatInput';
-			this.chatInput.maxLength = 140;
+        // showcar.events.onInputDown.add( () => {
 
-			this.chatInput.addEventListener('keyup', (e) => {
+        setTimeout(() => {
+          this.driveCar.enabled = true
+          showcar.destroy()
+        }, 3000)
 
-				if( e.keyCode == 13 ){
+        // });
+      })
 
-					this.game.mulle.net.send( {
-						msg: this.chatInput.value
-					} );
+      this.clientCars.addChild(p)
 
-					this.chatInput.value = '';
+      this.clients[id].car = p
 
-				}
+      // console.log('add car', id);
+    }
+  }
 
-			});
+  networkUpdate (event) {
+    var msg = JSON.parse(event.data)
 
-			document.getElementById('player').appendChild( this.chatInput );
+    // console.log('world network', msg.data);
 
-			this.chatLog = [];
+    console.debug('network receive', msg)
 
-			this.chatHistory = new Phaser.Text( this.game, 0, 0, '', {
-			
-				font: '11px arial',
-				fill: '#ffffff',
-				// backgroundColor: 'rgba(0,0,0,.5)',
+    if (msg.c) {
+      // console.log('client list updated');
 
-				stroke: '#000000',
-				strokeThickness: 2,
+      this.clients = msg.c
 
-				boundsAlignH: 'left',
-				boundsAlignV: 'bottom'
+      this.networkRefresh()
+    }
 
-			} );
+    // if( msg.join ) this.clients[ msg.join ] = {};
 
-			this.chatHistory.lineSpacing = -5;
+    if (msg.leave) {
+      // console.log('leave', msg.leave);
 
-			this.chatHistory.setTextBounds( 5, 290, 300, 80 );
-			// this.chatHistory.textBounds = new Phaser.Rectangle( 0, 0, 300, 100 );
+      delete this.clients[ msg.leave ]
 
-			this.game.add.existing( this.chatHistory );
+      this.networkRefresh()
+    }
 
-		}
+    if (msg.x && msg.y) {
+      if (!this.clients[ msg.i ]) {
+        console.error('invalid client', msg.i)
+        return
+      }
 
+      this.clients[ msg.i ].x = msg.x
+      this.clients[ msg.i ].y = msg.y
+      this.clients[ msg.i ].d = msg.d
 
-		// cheats
-		if( this.game.mulle.cheats ){
+      // this.clients[ msg.i ].car.position.set( msg.x, msg.y );
 
-			for( let y = 0; y < this.activeWorld.map.length; y++ ){
-				
-				let row = document.createElement('div');
+      game.add.tween(this.clients[ msg.i ].car).to({
+        x: msg.x,
+        y: msg.y
+        // direction: msg.d,
+      }, Phaser.Timer.SECOND / this.networkTicks, Phaser.Easing.Linear.None, true)
 
-				for( let x = 0; x < this.activeWorld.map[y].length; x++ ){
-					
-					let m = this.activeWorld.map[y][x];
+      this.clients[ msg.i ].car.direction = msg.d
 
-					let b = document.createElement('button');
-					b.innerHTML = m.MapId;
-					b.className = 'button';
+      this.clients[ msg.i ].car.updateImage()
+    }
 
-					b.addEventListener('click', (e) => {
+    if (msg.msg) {
+      var t = ''
 
-						this.changeMap( new Phaser.Point(x+1, y+1), true );
+      this.chatLog.push(msg)
 
-					});
+      this.chatLog.forEach((m) => {
+        t += m.p + ': ' + m.msg + '\n'
+      })
 
-					row.appendChild(b);
+      if (this.chatLog.length > 5) this.chatLog.splice(0, 1)
 
-				}
+      this.chatHistory.text = t.trim('\n')
+    }
+  }
 
-				document.getElementById('cheats').appendChild(row);
+  networkSend () {
+    if (this.game.mulle.net.socket) {
+      if (Object.keys(this.clients).length == 0) return
 
-			}
-
-		}
-
-
-	}
-
-	networkRefresh(){
-		
-		this.clientCars.killAll(true);
-
-		// console.log('network refresh', this.clients);
-
-		for( var id in this.clients ){
-
-			var p = new MulleMPCar(this.game);
-			
-			p.position.set( this.clients[id].x, this.clients[id].y );
-			
-			p.updateImage();
-
-			if( this.clients[id].n ){
-				p.nametag.text = this.clients[id].n;
-			}
-
-			p.inputEnabled = true;
-			p.input.useHandCursor = true;
-			p.events.onInputDown.add( () => {
-
-				this.driveCar.enabled = false;
-
-				var showcar = new MulleBuildCar( this.game, 320, 240, this.clients[id].p, true, false );
-				this.game.add.existing(showcar);
-				
-				// showcar.events.onInputDown.add( () => {
-				
-				setTimeout( () => {	
-					this.driveCar.enabled = true;
-					showcar.destroy();
-				}, 3000 );
-
-				// });
-
-			});
-			
-
-			this.clientCars.addChild(p);
-
-			this.clients[id].car = p;
-
-			// console.log('add car', id);
-
-		}
-
-	}
-
-	networkUpdate( event ){
-
-		var msg = JSON.parse( event.data );
-
-		// console.log('world network', msg.data);
-
-		console.debug( 'network receive', msg );
-
-		if( msg.c ){
-
-			// console.log('client list updated');
-			
-			this.clients = msg.c;
-
-			this.networkRefresh();
-
-		}
-
-		// if( msg.join ) this.clients[ msg.join ] = {};
-
-		if( msg.leave ){
-
-			// console.log('leave', msg.leave);
-
-			delete this.clients[ msg.leave ];
-
-			this.networkRefresh();
-
-		}
-
-		if( msg.x && msg.y ){
-
-			if(!this.clients[ msg.i ]){
-				console.error('invalid client', msg.i);
-				return;
-			}
-
-			this.clients[ msg.i ].x = msg.x;
-			this.clients[ msg.i ].y = msg.y;
-			this.clients[ msg.i ].d = msg.d;
-
-			// this.clients[ msg.i ].car.position.set( msg.x, msg.y );
-			
-			game.add.tween( this.clients[ msg.i ].car ).to( {
-				x: msg.x,
-				y: msg.y,
-				// direction: msg.d,
-			}, Phaser.Timer.SECOND / this.networkTicks, Phaser.Easing.Linear.None, true);
-
-			this.clients[ msg.i ].car.direction = msg.d;
-
-			this.clients[ msg.i ].car.updateImage();
-
-		}
-
-		if( msg.msg ){
-
-			var t = '';
-
-			this.chatLog.push( msg );
-
-			this.chatLog.forEach( (m) => {
-				t += m.p + ': ' + m.msg + "\n";
-			});
-
-			if( this.chatLog.length > 5 ) this.chatLog.splice(0, 1);
-
-			this.chatHistory.text = t.trim("\n");
-
-		}	
-
-	}
-
-	networkSend(){
-
-		if( this.game.mulle.net.socket ){
-
-			if( Object.keys( this.clients ).length == 0 ) return;
-
-			if(
-				this.lastX == Math.round( this.driveCar.position.x ) &&
-				this.lastY == Math.round( this.driveCar.position.y ) &&
+      if (
+        this.lastX == Math.round(this.driveCar.position.x) &&
+				this.lastY == Math.round(this.driveCar.position.y) &&
 				this.lastD == this.driveCar.direction
-			){
+      ) {
+        return
+      }
 
-				return;
+      this.game.mulle.net.send({
+        x: Math.round(this.driveCar.position.x),
+        y: Math.round(this.driveCar.position.y),
+        d: this.driveCar.direction
+      })
 
-			}
+      this.lastX = Math.round(this.driveCar.position.x)
+      this.lastY = Math.round(this.driveCar.position.y)
+      this.lastD = this.driveCar.direction
+    }
+  }
 
-			this.game.mulle.net.send( {
-				x: Math.round( this.driveCar.position.x ),
-				y: Math.round( this.driveCar.position.y ),
-				d: this.driveCar.direction
-			} );
+  update () {
+    // fuel meter
+    var fuelAmount = Math.max(0, Math.min(16, Math.round((this.driveCar.fuelCurrent / this.driveCar.fuelMax) * 16)))
 
-			this.lastX = Math.round( this.driveCar.position.x );
-			this.lastY = Math.round( this.driveCar.position.y );
-			this.lastD = this.driveCar.direction;
+    if (this.lastFuelAmount != fuelAmount) {
+      // this.spriteFuelNeedle.frameName = (27 + ( fuelAmount - 1 )  ).toString();
+      this.spriteFuelNeedle.animations.frame = this.spriteFuelNeedle.animations._outputFrames[ fuelAmount ]
+      this.lastFuelAmount = fuelAmount
+    }
 
-		}
+    // speed meter
+    this.spriteSpeedometer.position.x = 100 + Math.abs(140 * (this.driveCar.speed / this.driveCar.getQuickProperty('speed')))
 
-	}
+    var p = this.game.input.activePointer
 
-	update(){
-		
-		// fuel meter
-		var fuelAmount = Math.max( 0, Math.min( 16, Math.round( (this.driveCar.fuelCurrent / this.driveCar.fuelMax) * 16 ) ) );
+    // activate meme mode
+    if (this.game.input.keyboard.isDown(77)) {
+      if (!this.driveCar.memeMode) {
+        this.changeMap(new Phaser.Point(4, 5), true)
 
-		if( this.lastFuelAmount != fuelAmount ){
-			// this.spriteFuelNeedle.frameName = (27 + ( fuelAmount - 1 )  ).toString();
-			this.spriteFuelNeedle.animations.frame = this.spriteFuelNeedle.animations._outputFrames[ fuelAmount ];
-			this.lastFuelAmount = fuelAmount;
-		}
+        this.driveCar.position.set(400, 62)
 
+        this.driveCar.direction = 12
 
-		// speed meter
-		this.spriteSpeedometer.position.x = 100 + Math.abs( 140 * ( this.driveCar.speed / this.driveCar.getQuickProperty('speed') ) );
+        this.driveCar.enableMemeMode()
+      }
+    }
 
+    if (!this.game.mulle.debug) {
+      // set active steering method
+      if (p.isDown) this.driveCar.keySteer = 0
 
-		var p = this.game.input.activePointer;
-
-		// activate meme mode
-		if( this.game.input.keyboard.isDown(77) ){
-			if(!this.driveCar.memeMode){
-				
-				this.changeMap( new Phaser.Point(4, 5), true );
-
-				this.driveCar.position.set( 400, 62 );
-
-				this.driveCar.direction = 12;
-
-				this.driveCar.enableMemeMode();
-			
-			}
-		}
-
-		if(!this.game.mulle.debug){
-			
-			// set active steering method
-			if( p.isDown ) this.driveCar.keySteer = 0;
-
-			if( this.driveCar.cursors.up.isDown ||
+      if (this.driveCar.cursors.up.isDown ||
 				this.driveCar.cursors.down.isDown ||
 				this.driveCar.cursors.left.isDown ||
-				this.driveCar.cursors.right.isDown ){
-				this.driveCar.keySteer = 1;
-			}
+				this.driveCar.cursors.right.isDown) {
+        this.driveCar.keySteer = 1
+      }
+    } else {
+      if (p.isDown && p.position.y < 400) {
+        this.driveCar.position.set(p.position.x, p.position.y)
+        this.driveCar.speed = 0
+      }
+    }
 
-		}else{
-			
-			if( p.isDown && p.position.y < 400 ){
-				this.driveCar.position.set( p.position.x, p.position.y );
-				this.driveCar.speed = 0;
-			}
-		
-		}
-		
+    // mouse steer
+    if (!this.driveCar.keySteer) {
+      var m = p.position
+      var c = this.driveCar.position
+      var a = this.driveCar.direction * 22.5
 
-		// mouse steer
-		if( !this.driveCar.keySteer ){
-			
-			var m = p.position;
-			var c = this.driveCar.position;
-			var a = this.driveCar.direction * 22.5;
+      var ang = this.game.math.wrapAngle(m.angle(c, true) - a - 90 - 11.25)
 
-			var ang = this.game.math.wrapAngle( m.angle(c, true) - a - 90 - 11.25 );
+      if (ang >= 22.5) {
+        this.driveCar.Steering = 1
+      } else if (ang <= -22.5) {
+        this.driveCar.Steering = -1
+      } else {
+        this.driveCar.Steering = 0
+      }
 
-			if( ang >= 22.5 ){
-				this.driveCar.Steering = 1;
-			}else if(ang <= -22.5){
-				this.driveCar.Steering = -1;
-			}else{
-				this.driveCar.Steering = 0;
-			}
+      var goDir = this.driveCar.direction
 
-			var goDir = this.driveCar.direction;
+      if (p.isDown) {
+        // turn around
+        var dir = (ang < -90 || ang > 90) ? -1 : 1
 
+        this.driveCar.changeSpeed(dir)
 
-			if( p.isDown ){
+        // this.game.canvas.className = 'cursor-direction-' + goDir;
+        // console.log('drive', 'cursor-direction-' + goDir );
+      } else {
+        this.driveCar.changeSpeed(0)
 
-				// turn around
-				var dir = ( ang < -90 || ang > 90 ) ? -1 : 1;
+        // this.game.canvas.className = 'cursor-drive';
+        // console.log('stop');
+      }
+    }
+  }
 
-				this.driveCar.changeSpeed( dir );
+  render () {
+    if (this.game.mulle.debug) {
+      this.mapObjects.forEach((v) => {
+        if (!v.def) return
 
-				// this.game.canvas.className = 'cursor-direction-' + goDir;
-				// console.log('drive', 'cursor-direction-' + goDir );
+        this.game.debug.geom(v.outer, 'rgba(155,0,0,.6)')
+        this.game.debug.geom(v.inner, 'rgba(255,255,0,.6)')
+        this.game.debug.text('#' + v.id, v.x, v.y)
+        this.game.debug.text('D ' + v.def.DirResource, v.x, v.y + 16)
+      })
+    }
+  }
 
-			}else{
-				this.driveCar.changeSpeed(0);
+  shutdown () {
+    this.topBitmap.destroy()
 
-				// this.game.canvas.className = 'cursor-drive';
-				// console.log('stop');
-				
-			}
+    this.clientCars.destroy()
 
-		}
+    if (this.cutscene) {
+      this.cutscene.destroy()
+      this.cutscene = null
+    }
 
-	}
+    // networking stuff
+    if (this.game.mulle.net.connected) {
+      this.game.mulle.net.socket.removeEventListener('message', this.networkListener)
+    }
 
-	
-	render(){
-
-		if(this.game.mulle.debug){
-
-			this.mapObjects.forEach( (v) => {
-
-				if(!v.def) return;
-
-				this.game.debug.geom(v.outer,'rgba(155,0,0,.6)');
-				this.game.debug.geom(v.inner,'rgba(255,255,0,.6)');
-				this.game.debug.text( '#' + v.id, v.x, v.y );
-				this.game.debug.text( 'D ' + v.def.DirResource, v.x, v.y + 16 );
-
-			});
-
-		}
-	
-	}
-
-
-	shutdown(){
-
-		this.topBitmap.destroy();
-
-		this.clientCars.destroy();
-
-		if(this.cutscene){
-			this.cutscene.destroy();
-			this.cutscene = null;
-		}
-
-		// networking stuff
-		if( this.game.mulle.net.connected ){
-			this.game.mulle.net.socket.removeEventListener('message', this.networkListener);
-		}
-
-		if(this.netLoop) this.game.time.events.remove( this.netLoop );
-		if(this.chatInput) this.chatInput.parentNode.removeChild(this.chatInput);
-		if(this.chatHistory) this.chatHistory.destroy();
-		
-	}
-
+    if (this.netLoop) this.game.time.events.remove(this.netLoop)
+    if (this.chatInput) this.chatInput.parentNode.removeChild(this.chatInput)
+    if (this.chatHistory) this.chatHistory.destroy()
+  }
 }
 
-export default WorldState;
+export default WorldState

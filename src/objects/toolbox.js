@@ -2,83 +2,73 @@
  * MulleToolbox object
  * @module objects/toolbox
  */
-"use strict";
+'use strict'
 
-import MulleSprite from 'objects/sprite';
+import MulleSprite from 'objects/sprite'
 
 /**
  * Mulle actor, extension of mulle sprite + phaser sprite
  * @extends MulleSprite
  */
 class MulleToolbox extends MulleSprite {
+  constructor (game, x, y) {
+    super(game, x, y)
 
-	constructor( game, x, y ){
+    this.startX = x
+    this.startY = y
 
-		super( game, x, y );
+    this.isShowing = false
 
-		this.startX = x;
-		this.startY = y;
+    this.setDirectorMember('00.CXT', 97)
 
-		this.isShowing = false;
+    this.inputEnabled = true
 
-		this.setDirectorMember('00.CXT', 97);
+    // this.input.useHandCursor = true;
 
-		this.inputEnabled = true;
+    this.events.onInputOver.add(() => {
+      // console.log('hover');
 
-		// this.input.useHandCursor = true;
+      game.add.tween(this).to({
+        x: this.startX - 40,
+        y: this.position.y
+        // direction: msg.d,
+      }, Phaser.Timer.SECOND / 5, Phaser.Easing.Linear.None, true)
 
-		this.events.onInputOver.add( () => {
+      this.game.mulle.playAudio('00e040v0')
+    })
 
-			// console.log('hover');
+    this.events.onInputOut.add(() => {
+      // console.log('hover');
 
-			game.add.tween( this ).to( {
-				x: this.startX-40,
-				y: this.position.y,
-				// direction: msg.d,
-			}, Phaser.Timer.SECOND / 5, Phaser.Easing.Linear.None, true);
+      game.add.tween(this).to({
+        x: this.startX,
+        y: this.position.y
+        // direction: msg.d,
+      }, Phaser.Timer.SECOND / 5, Phaser.Easing.Linear.None, true)
+    })
 
-			this.game.mulle.playAudio('00e040v0');
+    this.events.onInputDown.add(this.toggleToolbox)
+  }
 
-		});
+  toggleToolbox (me, pointer) {
+    if (me.isShowing) {
+      me.isShowing = !me.hideToolbox()
+    } else {
+      me.isShowing = me.showToolbox()
+    }
+  }
 
-		this.events.onInputOut.add( () => {
+  showToolbox () {
 
-			// console.log('hover');
+    // console.log('show toolbox', this);
 
-			game.add.tween( this ).to( {
-				x: this.startX,
-				y: this.position.y,
-				// direction: msg.d,
-			}, Phaser.Timer.SECOND / 5, Phaser.Easing.Linear.None, true);
+  }
 
-		});
+  hideToolbox () {
 
-		this.events.onInputDown.add( this.toggleToolbox );
+    // console.log('hide toolbox', this);
 
-	}
-
-	toggleToolbox(me, pointer){
-
-		if( me.isShowing ){
-			me.isShowing = !me.hideToolbox();
-		}else{
-			me.isShowing = me.showToolbox();
-		}
-
-	}
-
-	showToolbox(){
-
-		// console.log('show toolbox', this);
-
-	}
-
-	hideToolbox(){
-
-		// console.log('hide toolbox', this);
-
-	}
-
+  }
 }
 
-export default MulleToolbox;
+export default MulleToolbox

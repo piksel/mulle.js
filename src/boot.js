@@ -4,65 +4,45 @@
  */
 
 class BootState extends Phaser.State {
+  preload () {
+    this.game.load.image('loading', 'loading.png')
+  }
 
-	preload(){
-		this.game.load.image('loading', 'loading.png');
-	}
+  create () {
+    this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL
 
-	create(){
+    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
+    this.game.scale.refresh()
 
-		this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+    if (this.game.mulle.networkEnabled) {
+      this.game.mulle.net.connect()
 
-		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		this.game.scale.refresh();
+      // launch on connect
+      this.game.mulle.net.socket.addEventListener('open', (event) => {
+        if (this.game.state.current == 'boot') {
+          this.game.state.start('load')
+        }
+      })
 
-		if( this.game.mulle.networkEnabled ){
+      // inform on connection close
+      this.game.mulle.net.socket.addEventListener('close', (event) => {
+        if (this.game.state.current == 'boot') {
+          alert('Server ej tillgänglig, multiplayer avstängt.')
 
-			this.game.mulle.net.connect();
+          this.game.state.start('load')
+        } else {
+          alert('Anslutningen till servern avbröts.')
+        }
+      })
 
-			// launch on connect
-			this.game.mulle.net.socket.addEventListener('open', (event) => {
-				
-				if(this.game.state.current == 'boot'){
-					
-					this.game.state.start('load');
-
-				}
-
-			});
-
-			// inform on connection close
-			this.game.mulle.net.socket.addEventListener('close', (event) => {
-
-				if(this.game.state.current == 'boot'){
-
-					alert('Server ej tillgänglig, multiplayer avstängt.');
-
-					this.game.state.start('load');
-
-				}else{
-				
-					alert('Anslutningen till servern avbröts.');
-
-				}
-
-			});
-
-			// update state
-			this.game.state.onStateChange.add( (s) => {
-				
-				this.game.mulle.net.send({ scene: s });
-
-			});
-
-		}else{
-
-			this.game.state.start('load');
-
-		}
-
-	}
-
+      // update state
+      this.game.state.onStateChange.add((s) => {
+        this.game.mulle.net.send({ scene: s })
+      })
+    } else {
+      this.game.state.start('load')
+    }
+  }
 }
 
-export default BootState;
+export default BootState
