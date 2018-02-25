@@ -4,7 +4,7 @@ import MulleState from 'scenes/base'
 
 import MulleSprite from 'objects/sprite'
 import MulleBuildCar from 'objects/buildcar'
-import MulleActor from 'objects/actor'
+// import MulleActor from 'objects/actor'
 import MulleButton from 'objects/button'
 import MulleCarPart from 'objects/carpart'
 
@@ -123,15 +123,15 @@ class YardState extends MulleState {
     this.door_garage.cursorDrag = 'MoveRight'
 
     /*
-		this.junkPile = this.game.mulle.user.Junk.yard;
+    this.junkPile = this.game.mulle.user.Junk.yard
 
-		this.junkParts = this.junkPile.makeContainer();
+    this.junkParts = this.junkPile.makeContainer()
 
-		this.junkPile.addJunkLocation( this.door_garage, 'shopFloor' );
-		this.junkPile.addJunkLocation( this.door_side, 'shopFloor' );
+    this.junkPile.addJunkLocation(this.door_garage, 'shopFloor')
+    this.junkPile.addJunkLocation(this.door_side, 'shopFloor')
 
-		this.junkPile.spawnParts();
-		*/
+    this.junkPile.spawnParts()
+    */
 
     this.junkParts = this.game.add.group()
     this.junkParts.pileName = 'yard'

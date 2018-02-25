@@ -20,8 +20,8 @@ class StureStortandState extends MulleState {
 
     this.car = null
 
-    var hasLemonade 	= this.game.mulle.user.Car.hasCache('#Lemonade')
-    var hasTank 		= this.game.mulle.user.Car.hasPart(172)
+    var hasLemonade = this.game.mulle.user.Car.hasCache('#Lemonade')
+    var hasTank = this.game.mulle.user.Car.hasPart(172)
 
     var background = new MulleSprite(this.game, 320, 240)
     background.setDirectorMember(this.DirResource, hasLemonade ? 32 : 40)
@@ -97,16 +97,12 @@ class StureStortandState extends MulleState {
       })
     }
 
-    // var dog = new MulleSprite(this.game, 480, 386);
-    // dog.setDirectorMember('85.DXR', 26);
-    // this.game.add.existing(dog);
+    // var dog = new MulleSprite(this.game, 480, 386)
+    // dog.setDirectorMember('85.DXR', 26)
+    // this.game.add.existing(dog)
 
     // narrator
-    // this.game.mulle.playAudio('88d001v0');
-
-    /*
-
-		*/
+    // this.game.mulle.playAudio('88d001v0')
 
     // bg loop
     this.game.mulle.playAudio('88e001v0')

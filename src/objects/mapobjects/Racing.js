@@ -61,9 +61,9 @@ function calcDirection (theStart, theEnd) {
   var diffX = theEnd.x - theStart.x
   var diffY = theStart.y - theEnd.y
 
-  var hypo = Math.sqrt(diffX * diffX + diffY * diffY)
+  // var hypo = Math.sqrt(diffX * diffX + diffY * diffY)
 
-  if (diffY == 0) diffY = 0.1
+  if (diffY === 0) diffY = 0.1
 
   var tempDirection = Math.atan(diffX / diffY)
 
@@ -85,10 +85,10 @@ function calcDirection (theStart, theEnd) {
 
   tempDirection = Math.round(tempDirection * 16 / 2)
 
-  if (tempDirection == 0) tempDirection = 16
+  if (tempDirection === 0) tempDirection = 16
 
   // if option = #WithHypo then
-  //	return([tempDirection, hypo])
+  //  return([tempDirection, hypo])
   // }
   //
   return tempDirection
@@ -103,7 +103,7 @@ MapObject.onEnterInner = function (car) {
     this.enteredFrom = 1
 
     if (this.isRacing) {
-      if (this.nrOfTimesPassed == 1) {
+      if (this.nrOfTimesPassed === 1) {
         console.log('finish race')
 
         this.game.mulle.playAudio(this.def.Sounds[1])
@@ -145,13 +145,13 @@ MapObject.onExitInner = function (car) {
     if (diff > 8) diff = 16 - diff
 
     if (diff <= 3) {
-      if (this.enteredFrom == -1) {
+      if (this.enteredFrom === -1) {
         this.nrOfTimesPassed--
 
         console.log('passed minus', this.nrOfTimesPassed)
       }
     } else {
-      if (this.enteredFrom == 1) {
+      if (this.enteredFrom === 1) {
         this.nrOfTimesPassed++
 
         console.log('passed plus', this.nrOfTimesPassed)

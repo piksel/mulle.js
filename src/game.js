@@ -60,13 +60,13 @@ class MulleGame extends Phaser.Game {
     })
 
     /**
-		 * Utility library
-		 * @property {MulleGame}	game	Main game
-		 * @property {Object}		scenes	Scene lookups
-		 * @property {Object}		audio	Audio collections
-		 * @property {Object}		actors	Available actors
-		 * @property {function}		playAudio
-		 */
+     * Utility library
+     * @property {MulleGame} game      Main game
+     * @property {Object}    scenes    Scene lookups
+     * @property {Object}    audio     Audio collections
+     * @property {Object}    actors    Available actors
+     * @property {function}  playAudio
+     */
     this.mulle = {}
 
     this.mulle.game = this
@@ -76,8 +76,8 @@ class MulleGame extends Phaser.Game {
 
     this.mulle.networkEnabled = true
 
-    this.mulle.networkServer		= 'mulle.dongers.net:8765'
-    this.mulle.networkDevServer	= 'localhost:8765'
+    this.mulle.networkServer = 'mulle.dongers.net:8765'
+    this.mulle.networkDevServer = 'localhost:8765'
 
     this.mulle.defaultLanguage = 'english'
     // this.mulle.defaultLanguage = 'swedish';
@@ -111,24 +111,24 @@ class MulleGame extends Phaser.Game {
 
     this.mulle.states = {
 
-      'boot':	BootState,
-      'load':	LoadState,
+      'boot': BootState,
+      'load': LoadState,
 
-      'menu':	MenuState, // 10
+      'menu': MenuState, // 10
 
-      'junk':	JunkState, // 02
-      'garage':	GarageState, // 03
-      'yard':	YardState, // 04
-      'world':	WorldState, // 05
+      'junk': JunkState, // 02
+      'garage': GarageState, // 03
+      'yard': YardState, // 04
+      'world': WorldState, // 05
 
-      'roadthing':	RoadThingState, // 84
-      'roaddog':	RoadDogState, // 85
-      'solhem':	SolhemState, // 86
-      'saftfabrik':	SaftfabrikState,
-      'sturestortand':	StureStortandState,
-      'figgeferrum':	FiggeFerrumState, // 92
+      'roadthing': RoadThingState, // 84
+      'roaddog': RoadDogState, // 85
+      'solhem': SolhemState, // 86
+      'saftfabrik': SaftfabrikState,
+      'sturestortand': StureStortandState,
+      'figgeferrum': FiggeFerrumState, // 92
 
-      'carshow':	CarShowState // 94
+      'carshow': CarShowState // 94
 
     }
 
@@ -139,16 +139,16 @@ class MulleGame extends Phaser.Game {
     this.mulle.actors = {}
 
     /**
-		 * Play audio by member name
-		 * @param  {string} id
-		 * @return {Phaser.Sound} sound object
-		 */
+     * Play audio by member name
+     * @param  {string} id
+     * @return {Phaser.Sound} sound object
+     */
     this.mulle.playAudio = function (id, onStop = null) {
       for (let a in this.game.mulle.audio) {
         var p = this.game.mulle.audio[a]
 
         for (var s in p.sounds) {
-          if (p.sounds[s].extraData && id.toLowerCase() == p.sounds[s].extraData.dirName.toLowerCase()) {
+          if (p.sounds[s].extraData && id.toLowerCase() === p.sounds[s].extraData.dirName.toLowerCase()) {
             var snd = p.play(s)
 
             if (snd && onStop) { snd.onStop.addOnce(onStop) }
@@ -172,20 +172,20 @@ class MulleGame extends Phaser.Game {
         this.game.mulle.audio[key].sounds[id].extraData = this.game.mulle.audio[key].config.spritemap[id].data
 
         /*
-				var cues = this.game.mulle.audio[key].config.spritemap[id].cue;
+        var cues = this.game.mulle.audio[key].config.spritemap[id].cue
 
-				if( cues ){
+        if (cues) {
 
-					this.game.mulle.audio[key].sounds[id].cuePoints = [];
+          this.game.mulle.audio[key].sounds[id].cuePoints = []
 
-					for( var i = 0; i < cues.length; i++ ){
+          for (var i = 0; i < cues.length; i++) {
 
-						this.game.mulle.audio[key].sounds[id].cuePoints.push( cues[i] ); // addMarker( i + '_' + cues[i][1], cues[i][0] / 1000, 0.1 );
+            this.game.mulle.audio[key].sounds[id].cuePoints.push( cues[i] ) // addMarker( i + '_' + cues[i][1], cues[i][0] / 1000, 0.1 )
 
-					}
+          }
 
-				}
-				*/
+        }
+        */
       }
 
       console.debug('[audio]', 'add', this.game.mulle.audio[key])
@@ -196,7 +196,7 @@ class MulleGame extends Phaser.Game {
         var p = this.game.mulle.audio[a]
 
         for (var s in p.sounds) {
-          if (p.sounds[s].extraData && id == p.sounds[s].extraData.dirName) {
+          if (p.sounds[s].extraData && id === p.sounds[s].extraData.dirName) {
             return p.stop(s)
           }
         }
@@ -268,7 +268,7 @@ class MulleGame extends Phaser.Game {
         var frames = img.frameData.getFrames()
 
         for (var f in frames) {
-          if (frames[f].id && id == frames[f].id) {
+          if (frames[f].id && id === frames[f].id) {
             // this.game.mulle.frameLookup[ id ] = [img.key, frames[f].name];
 
             return returnFrame ? { frame: frames[f], key: img.key, name: frames[f].name } : [img.key, frames[f].name]
@@ -321,7 +321,7 @@ class MulleGame extends Phaser.Game {
         var frames = img.frameData.getFrames()
 
         for (var f in frames) {
-          if (frames[f].dirFile == dir && (frames[f].dirNum === num || frames[f].dirName === num)) {
+          if (frames[f].dirFile === dir && (frames[f].dirNum === num || frames[f].dirName === num)) {
             var data = { frame: frames[f], key: img.key, name: frames[f].name }
 
             directorImageLookup[l] = data
@@ -350,9 +350,9 @@ class MulleGame extends Phaser.Game {
   }
 
   /**
-	 * Setup and launch game
-	 * @return {void}
-	 */
+   * Setup and launch game
+   * @return {void}
+   */
   setup () {
     for (var i in this.mulle.states) {
       this.state.add(i, this.mulle.states[i])

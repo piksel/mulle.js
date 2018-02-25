@@ -41,7 +41,7 @@ MapObject.ferryLoop = function () {
   if (dist < 40 && !this.isOnFerry) {
     this.isOnFerry = true
 
-    car.direction = this.ferryStep == 0 ? 14 : 7
+    car.direction = this.ferryStep === 0 ? 14 : 7
 
     car.enabled = false
 
@@ -54,14 +54,14 @@ MapObject.ferryLoop = function () {
     car.bringToTop()
 
     /*
-		var t = game.add.tween( car ).to( {
-			x: this.x,
-			y: this.y
-		}, 100, Phaser.Easing.Linear.None, true);
-		*/
+    var t = game.add.tween(car).to({
+      x: this.x,
+      y: this.y
+    }, 100, Phaser.Easing.Linear.None, true)
+    */
   }
 
-  if (this.ferryStep == 0) {
+  if (this.ferryStep === 0) {
     var t = game.add.tween(this).to({
       x: this.optionalData.EndLoc.x,
       y: this.optionalData.EndLoc.y
@@ -75,7 +75,7 @@ MapObject.ferryLoop = function () {
     })
   }
 
-  if (this.ferryStep == 1) {
+  if (this.ferryStep === 1) {
     var t = game.add.tween(this).to({
       x: this.fromX,
       y: this.fromY

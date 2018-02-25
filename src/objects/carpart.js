@@ -12,14 +12,14 @@ import MulleSprite from 'objects/sprite'
  */
 class MulleCarPart extends MulleSprite {
   /**
-	 * Create car part
-	 * @param  {Phaser.Game}	game      Main game
-	 * @param  {number}			part_id   Junk part ID
-	 * @param  {number}			x         x position
-	 * @param  {number}			y         y position
-	 * @param  {boolean}		noPhysics Disable physics
-	 * @return {void}
-	 */
+   * Create car part
+   * @param  {Phaser.Game} game      Main game
+   * @param  {number}      part_id   Junk part ID
+   * @param  {number}      x         x position
+   * @param  {number}      y         y position
+   * @param  {boolean}     noPhysics Disable physics
+   * @return {void}
+   */
   constructor (game, part_id, x, y, noPhysics = false) {
     super(game, x, y)
 
@@ -62,32 +62,32 @@ class MulleCarPart extends MulleSprite {
 
     if (weight) {
       /*
-				"00e001v0" // light floor
-				"00e002v0" // medium floor
-				"00e003v0" // heavy floor
+        "00e001v0" // light floor
+        "00e002v0" // medium floor
+        "00e003v0" // heavy floor
 
-				"00e004v0" // light lower
-				"00e005v0" // medium lower
-				"00e006v0" // heavy lower
+        "00e004v0" // light lower
+        "00e005v0" // medium lower
+        "00e006v0" // heavy lower
 
-				"03e003v0" // light attach
-				"03e003v1" // medium attach
-				"03e003v2" // heavy attach
-			*/
+        "03e003v0" // light attach
+        "03e003v1" // medium attach
+        "03e003v2" // heavy attach
+      */
 
       if (weight >= 4) {
-        this.sound_attach 	= '03e003v2'
-        this.sound_floor 	= '00e003v0'
+        this.sound_attach = '03e003v2'
+        this.sound_floor = '00e003v0'
       } else if (weight >= 2) {
-        this.sound_attach 	= '03e003v1'
-        this.sound_floor 	= '00e002v0'
+        this.sound_attach = '03e003v1'
+        this.sound_floor = '00e002v0'
       }
     }
 
     this.default = {
-      junkView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.junkView),
-      UseView:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView),
-      UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView2),
+      junkView: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.junkView),
+      UseView: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView),
+      UseView2: game.mulle.getDirectorImage('CDDATA.CXT', this.partData.UseView2),
       offset: this.partData.offset.clone()
     }
 
@@ -109,9 +109,9 @@ class MulleCarPart extends MulleSprite {
           partId: partId,
           partData: partData,
 
-          junkView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.junkView),
-          UseView:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView),
-          UseView2:	game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView2),
+          junkView: game.mulle.getDirectorImage('CDDATA.CXT', partData.junkView),
+          UseView: game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView),
+          UseView2: game.mulle.getDirectorImage('CDDATA.CXT', partData.UseView2),
 
           offset: partData.offset.clone()
 
@@ -159,29 +159,29 @@ class MulleCarPart extends MulleSprite {
   }
 
   /**
-	 * Set active image
-	 * @param {string} name junkView/UseView/UseView2
-	 */
+   * Set active image
+   * @param {string} name junkView/UseView/UseView2
+   */
   setImage (name) {
     /*
-		if( this.frameName == name ) return;
+    if (this.frameName == name) return
 
-		if( this.activeMorph != null ){
+    if (this.activeMorph != null) {
 
-		}else{
+    } else {
 
-			console.log( 'set frame', this.default[name] );
+      console.log('set frame', this.default[name])
 
-			this.setFrame( this.default[name] );
+      this.setFrame(this.default[name])
 
-		}
-		*/
+    }
+    */
 
     var src = this.activeMorph != null ? this.morphs[ this.activeMorph ] : this.default
 
-    if (this.key == src[name].key && this.animations.frameName == src[name].name) return
+    if (this.key === src[name].key && this.animations.frameName === src[name].name) return
 
-    if (this.key == src[name].key) {
+    if (this.key === src[name].key) {
       // console.log('same key', src[name].name, this.frameName);
 
       this.frameName = src[name].name
@@ -198,32 +198,32 @@ class MulleCarPart extends MulleSprite {
     // console.debug('move part', pointer, x, y, point, fromStart);
 
     /*
-		for( var obj of window.game.world.children ){
+    for (var obj of window.game.world.children) {
 
-			if( obj.hitArea ){
+      if (obj.hitArea) {
 
-				if( obj.hitArea.contains( pointer.position.x - obj.position.x, pointer.position.y - obj.position.y ) ){
+        if (obj.hitArea.contains( pointer.position.x - obj.position.x, pointer.position.y - obj.position.y)) {
 
-					if(!obj.isOver){
-						// obj.onInputOverHandler();
-						obj.events.onInputOver.dispatch(this, { dragging: this } );
-						obj.isOver = true;
-					}
+          if (!obj.isOver) {
+            // obj.onInputOverHandler();
+            obj.events.onInputOver.dispatch(this, { dragging: this } );
+            obj.isOver = true;
+          }
 
-				}else{
+        } else {
 
-					if(obj.isOver){
-						// obj.onInputOutHandler();
-						obj.events.onInputOut.dispatch(this, { dragging: this } );
-						obj.isOver = null;
-					}
+          if (obj.isOver) {
+            // obj.onInputOutHandler();
+            obj.events.onInputOut.dispatch(this, { dragging: this } );
+            obj.isOver = null;
+          }
 
-				}
+        }
 
-			}
+      }
 
-		}
-		*/
+    }
+    */
 
     if (this.dropTargets) {
       for (var t of this.dropTargets) {
@@ -268,10 +268,10 @@ class MulleCarPart extends MulleSprite {
       this.activeMorph = null
       this.canAttach = false
 
-      if (this.activeView != 'junkView') this.setImage('junkView')
+      if (this.activeView !== 'junkView') this.setImage('junkView')
 
       this.dragTicks++
-      if (this.dragTicks == 60) {
+      if (this.dragTicks === 60) {
         this.game.mulle.actors.mulle.talk('03d04' + this.game.rnd.integerInRange(0, 2) + 'v0')
       }
 
@@ -357,10 +357,10 @@ class MulleCarPart extends MulleSprite {
   }
 
   /**
-	 * Check if part can be attached
-	 * @param  {number} morph Morph ID
-	 * @return {boolean}
-	 */
+   * Check if part can be attached
+   * @param  {number} morph Morph ID
+   * @return {boolean}
+   */
   checkCanAttach (morph = null) {
     // this.noAttach = false;
 
@@ -527,8 +527,8 @@ class MulleCarPart extends MulleSprite {
       }
     }
 
-    // if( this.junkPile ){
-    // 	this.updateJunkPile();
+    // if (this.junkPile) {
+    //   this.updateJunkPile()
     // }
   }
 
@@ -538,16 +538,16 @@ class MulleCarPart extends MulleSprite {
 
       this.groundSound = true
 
-      // if( this.junkPile ){
-      // 	this.updateJunkPile();
+      // if (this.junkPile) {
+      //   this.updateJunkPile()
       // }
     }
   }
 
   /**
-	 * Have Mulle talk about the part
-	 * @return {void}
-	 */
+   * Have Mulle talk about the part
+   * @return {void}
+   */
   playDescription () {
     if (!this.game.mulle.actors.mulle) return
 

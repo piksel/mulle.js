@@ -65,7 +65,7 @@ class SolhemState extends MulleState {
               ladder.setDirectorMember(this.DirResource, 3)
               ladder.sortIndex = 12
               car.add(ladder)
-              car.forEach((c) => { if (c.partId == 173) c.destroy() })
+              car.forEach((c) => { if (c.partId === 173) c.destroy() })
               car.sortLayers()
             }
 

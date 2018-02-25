@@ -63,12 +63,12 @@ class LoadState extends Phaser.State {
     this.game.mulle.WorldsDB = this.game.cache.getJSON('WorldsDB')
 
     /*
-		this.game.mulle.WorldsDB = {};
-		for( var id in worlds ){
-			this.game.mulle.WorldsDB[id] = new MulleWorld( this.game, id );
-			this.game.mulle.WorldsDB[id].fromJSON( worlds[id] );
-		}
-		*/
+    this.game.mulle.WorldsDB = {};
+    for (var id in worlds) {
+      this.game.mulle.WorldsDB[id] = new MulleWorld(this.game, id)
+      this.game.mulle.WorldsDB[id].fromJSON(worlds[id])
+    }
+    */
 
     this.game.mulle.ObjectsDB = this.game.cache.getJSON('ObjectsDB')
 

@@ -1,11 +1,11 @@
 var gulp = require('gulp')
 var webpack = require('webpack-stream')
-var gutil = require('gulp-util')
+// var gutil = require('gulp-util')
 var exec = require('child_process').exec
 var spawn = require('child_process').spawn
 var sass = require('gulp-sass')
 
-// var WebpackDevServer = require("webpack-dev-server");
+// var WebpackDevServer = require("webpack-dev-server")
 
 var WebpackDev = require('./webpack.dev.js')
 
@@ -39,12 +39,12 @@ gulp.task('phaser', function () {
   ]
 
   /*
-	var shl = spawn('grunt', cmd, { stdio: 'inherit' });
+  var shl = spawn('grunt', cmd, { stdio: 'inherit' })
 
-	shl.stdout.on('data', function(data){
-		console.log('grunt stdout: ' + data.toString());
-	});
-	*/
+  shl.stdout.on('data', function(data){
+    console.log('grunt stdout: ' + data.toString())
+  })
+  */
 
   exec(cmd.join(' '), function (err, stdout, stderr) {
     console.log('phaser err: ' + err)
@@ -92,13 +92,11 @@ gulp.task('assets-prod', function () {
   console.log('do assets prod')
 
   /*
-	return exec('python assets.py 7', function(err, stdout, stderr){
-
-		console.log(stdout);
-		console.log(stderr);
-
-	});
-	*/
+  return exec('python assets.py 7', function (err, stdout, stderr) {
+    console.log(stdout)
+    console.log(stderr)
+  })
+  */
 
   var cmd = spawn('python', ['assets.py', '7'], { stdio: 'inherit' })
 
@@ -126,20 +124,19 @@ gulp.task('js-prod', function () {
 /*
 gulp.task("start", function(callback) {
 
-	var myConfig = Object.create( WebpackDev );
+  var myConfig = Object.create( WebpackDev )
 
-	// Start a webpack-dev-server
-	new WebpackDevServer(webpack(myConfig), {
-		publicPath: "/" + myConfig.output.publicPath,
-		stats: {
-			colors: true
-		}
-	}).listen(8080, "localhost", function(err) {
-		if(err) throw new gutil.PluginError("webpack-dev-server", err);
-		gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
-	});
-
-});
+  // Start a webpack-dev-server
+  new WebpackDevServer(webpack(myConfig), {
+    publicPath: "/" + myConfig.output.publicPath,
+    stats: {
+      colors: true
+    }
+  }).listen(8080, "localhost", function(err) {
+    if(err) throw new gutil.PluginError("webpack-dev-server", err)
+    gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html")
+  })
+})
 */
 
 gulp.task('build-dev', [ 'phaser', 'js-dev', 'html', 'css' ])

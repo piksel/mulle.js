@@ -42,11 +42,10 @@ class MulleState extends Phaser.State {
   }
 
   /*
-
-	loadUpdate(){
-		console.log('loadUpdate', this.key);
-	}
-	*/
+  loadUpdate() {
+    console.log('loadUpdate', this.key)
+  }
+  */
 
   create () {
     if (this.cutscene) {

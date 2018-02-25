@@ -142,12 +142,13 @@ class GarageState extends MulleState {
     // var tmpList = .splice(0);
 
     /*
-		if( tmpList.length <= 3 ){
+    if (tmpList.length <= 3) {
 
-			tmpNewParts = tmpList.splice(0);
+      tmpNewParts = tmpList.splice(0)
 
-			return;
-		} */
+      return
+    }
+    */
 
     // car
     this.game.mulle.playAudio('03e009v0', () => {
@@ -298,25 +299,24 @@ class GarageState extends MulleState {
       }
     })
 
-    this.door_junk.cursor		= 'Click'
-    this.door_junk.cursorHover	= 'Click'
-    this.door_junk.cursorDrag	= 'MoveIn'
+    this.door_junk.cursor = 'Click'
+    this.door_junk.cursorHover = 'Click'
+    this.door_junk.cursorDrag = 'MoveIn'
 
     /*
-		this.game.mulle.cursor.addHook(door_junk, function( obj, state, event ){
+    this.game.mulle.cursor.addHook(door_junk, function( obj, state, event) {
 
-		this.game.add.existing(this.door_junk);
+      this.game.add.existing(this.door_junk)
 
-			if( event.dragging ) return 'cursor-drag_forward';
+      if (event.dragging) return 'cursor-drag_forward'
 
-			if( state == 'over' ){
-				return 'point';
-			}
+      if (state == 'over') {
+        return 'point'
+      }
 
-			return false;
-
-		});
-		*/
+      return false
+    })
+    */
 
     this.game.add.existing(this.door_junk)
 
@@ -334,9 +334,9 @@ class GarageState extends MulleState {
       }
     })
 
-    this.door_garage.cursor			= 'Left'
-    this.door_garage.cursorHover	= 'Left'
-    this.door_garage.cursorDrag		= 'MoveLeft'
+    this.door_garage.cursor = 'Left'
+    this.door_garage.cursorHover = 'Left'
+    this.door_garage.cursorDrag = 'MoveLeft'
 
     // door_garage.moveJunk = 'yard';
 
@@ -354,9 +354,9 @@ class GarageState extends MulleState {
       }
     })
 
-    this.door_side.cursor		= 'Left'
-    this.door_side.cursorHover	= 'Left'
-    this.door_side.cursorDrag	= 'MoveLeft'
+    this.door_side.cursor = 'Left'
+    this.door_side.cursorHover = 'Left'
+    this.door_side.cursorDrag = 'MoveLeft'
 
     // door_side.moveJunk = 'yard';
 

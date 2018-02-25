@@ -2,7 +2,7 @@ import MulleState from 'scenes/base'
 
 import MulleSprite from 'objects/sprite'
 import MulleActor from 'objects/actor'
-import MulleAudio from 'objects/audio'
+// import MulleAudio from 'objects/audio'
 
 import MulleSave from 'struct/savedata'
 
@@ -46,7 +46,7 @@ class MenuState extends MulleState {
     this.nameInput.addEventListener('keyup', (ev) => {
       let name = this.nameInput.value
 
-      if (ev.keyCode == 13) {
+      if (ev.keyCode === 13) {
         if (this.game.mulle.UsersDB[ name ]) {
           this.game.mulle.user = this.game.mulle.UsersDB[ name ]
         } else {
@@ -120,10 +120,10 @@ class MenuState extends MulleState {
       this.game.mulle.playAudio('10e002v0')
 
       mulleMouth.talk('11d001v0', null, c => {
-        if (c[1] == 'silence') mulleMouth.animations.play('idle', 0)
-        if (c[1] == 'talk') mulleMouth.animations.play('talkPlayer')
+        if (c[1] === 'silence') mulleMouth.animations.play('idle', 0)
+        if (c[1] === 'talk') mulleMouth.animations.play('talkPlayer')
 
-        if (c[1] == 'point') {
+        if (c[1] === 'point') {
           mulleHead.animations.play('point')
           console.log('do point')
         }

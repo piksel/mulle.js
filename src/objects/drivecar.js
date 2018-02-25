@@ -45,17 +45,17 @@ class MulleDriveCar extends MulleSprite {
     }
 
     /*
-		this.sprite = carMember.sprite( 320, 220 );
+    this.sprite = carMember.sprite(320, 220)
 
-		this.sprite.name = 'drivecar';
+    this.sprite.name = 'drivecar'
 
-		this.sprite.smoothed = false;
+    this.sprite.smoothed = false
 
-		this.spriteFrames = { "-2": {}, "-1": {}, "0": {}, "1": {}, "2": {} };
-		for( var i = 0; i < 16; i++ ){
-			this.spriteFrames["0"][ i + 1 ] = this.game.mulle.getMember('05.DXR', 'Internal', 110 + i);
-		}
-		*/
+    this.spriteFrames = { "-2": {}, "-1": {}, "0": {}, "1": {}, "2": {} }
+    for (var i = 0; i < 16; i++) {
+      this.spriteFrames["0"][ i + 1 ] = this.game.mulle.getMember('05.DXR', 'Internal', 110 + i)
+    }
+    */
 
     this.speed = 0
     this.direction = 0
@@ -121,8 +121,8 @@ class MulleDriveCar extends MulleSprite {
       ['05e018v0', '05e024v0', '05e019v0', '05e020v0', '05e021v0', '05e022v0', '05e023v0'],
       ['05e060v0', '05e066v0', '05e061v0', '05e062v0', '05e063v0', '05e064v0', '05e065v0'],
       ['05e032v0', '05e038v0', '05e033v0', '05e034v0', '05e035v0', '05e036v0', '05e037v0']
-      // 0		1			2			3			4			5			6
-      // startup 	shutdown 	idle		speed1		speed2		speed3		speed4
+      // 0          1           2           3           4           5           6
+      // startup    shutdown    idle        speed1      speed2      speed3      speed4
     ]
 
     this.hornSounds = ['05e050v0', '05e049v0', '05e044v0', '05e042v0', '05d013v0']
@@ -198,7 +198,7 @@ class MulleDriveCar extends MulleSprite {
         tempPos = 2
       }
 
-      if (this.lastSpeed == tempPos) return
+      if (this.lastSpeed === tempPos) return
 
       var lib = this.engineSounds[ eType - 1 ]
 
@@ -328,10 +328,10 @@ class MulleDriveCar extends MulleSprite {
     if (this.OutOfBounds > 5) {
       for (var r = 0; r < 4; r++) {
         var tryCoordinate = this.position.clone()
-        if (r == 0) tryCoordinate.y -= this.OutOfBounds
-        if (r == 1) tryCoordinate.x += this.OutOfBounds
-        if (r == 2) tryCoordinate.y += this.OutOfBounds
-        if (r == 3) tryCoordinate.x -= this.OutOfBounds
+        if (r === 0) tryCoordinate.y -= this.OutOfBounds
+        if (r === 1) tryCoordinate.x += this.OutOfBounds
+        if (r === 2) tryCoordinate.y += this.OutOfBounds
+        if (r === 3) tryCoordinate.x -= this.OutOfBounds
 
         // game.debug.pixel( tryCoordinate.x, tryCoordinate.y, 'rgba(0,255,255,1)' ) ;
 
@@ -404,9 +404,9 @@ class MulleDriveCar extends MulleSprite {
     if (this.speed) {
       // turn away from walls
       for (var d = 0; d <= 1; d++) {
-        var dir = d == 0 ? -1 : 1
+        var dir = d === 0 ? -1 : 1
 
-        var amt = this.forwardBackward == 1 ? 7 + (this.speed) : -3
+        var amt = this.forwardBackward === 1 ? 7 + (this.speed) : -3
 
         var ang = this.directionList[ this.correctDirection(this.direction + dir) - 1 ].clone()
 
@@ -474,8 +474,8 @@ class MulleDriveCar extends MulleSprite {
           }
 
           // mud
-          if (checkNext == 32) {
-            if (this.game.mulle.user.Car.criteria.MudGrip == 0) {
+          if (checkNext === 32) {
+            if (this.game.mulle.user.Car.criteria.MudGrip === 0) {
               console.log('mud')
 
               setOk = false
@@ -493,8 +493,8 @@ class MulleDriveCar extends MulleSprite {
           }
 
           // rocks
-          if (checkNext == 16) {
-            if (this.game.mulle.user.Car.criteria.HolesDurability == 0) {
+          if (checkNext === 16) {
+            if (this.game.mulle.user.Car.criteria.HolesDurability === 0) {
               console.log('rocks')
 
               setOk = false
@@ -540,11 +540,11 @@ class MulleDriveCar extends MulleSprite {
       console.log(b)
       console.log('Change map')
 
-      if (b.x == -1) this.position.x = 640 - 8 - 1
-      if (b.x == 1) this.position.x = 4 + 8
+      if (b.x === -1) this.position.x = 640 - 8 - 1
+      if (b.x === 1) this.position.x = 4 + 8
 
-      if (b.y == -1) this.position.y = 396 - 1
-      if (b.y == 1) this.position.y = 4 + 8
+      if (b.y === -1) this.position.y = 396 - 1
+      if (b.y === 1) this.position.y = 4 + 8
 
       this.state.changeMap(b)
     }
@@ -613,7 +613,7 @@ class MulleDriveCar extends MulleSprite {
     coord.subtract(this.mapOffset.x, this.mapOffset.y)
     coord.divide(2, 2)
 
-    if (theForward == 1) {
+    if (theForward === 1) {
       var temp = this.wheelPositions[ Math.abs(theDirection) - 1 ]
       coord.add(temp.x, temp.y)
     }
@@ -649,13 +649,13 @@ class MulleDriveCar extends MulleSprite {
 
         // console.log('meme', s, this.body.acceleration);
       } else {
-        if (this.stopTimer == 0) {
+        if (this.stopTimer === 0) {
           var tempAcc = 0
 
-          if (this.forwardBackward == 0) {
+          if (this.forwardBackward === 0) {
             tempAcc = this.acceleration * this.getQuickProperty('acceleration')
           } else {
-            if (this.forwardBackward == this.acceleration) {
+            if (this.forwardBackward === this.acceleration) {
               tempAcc = this.acceleration * (this.getQuickProperty('acceleration'))
             } else {
               // console.log('go backwards', Math.abs( this.speed ), this.maxAcc );

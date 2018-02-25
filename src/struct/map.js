@@ -10,9 +10,9 @@ class MulleMap {
   reset () {
     // console.log('map', this._data);
 
-    this.MapImage 	= this._data.MapImage
-    this.Topology 	= this._data.Topology
-    this.objects 	= this._data.objects
+    this.MapImage = this._data.MapImage
+    this.Topology = this._data.Topology
+    this.objects = this._data.objects
   }
 
   fromJSON (data) {

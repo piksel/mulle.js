@@ -43,7 +43,7 @@ class RoadThingState extends MulleState {
     var partId
 
     for (var i of this.game.mulle.SetWhenDone.Parts) {
-      if (i == '#Random') {
+      if (i === '#Random') {
         i = this.game.mulle.user.getRandomPart()
       } else {
         if (this.game.mulle.user.hasPart(i)) continue

@@ -61,7 +61,7 @@ class MulleCursor {
 
   refresh () {
     if (this._history.length > 0) {
-      this.game.canvas.className = 'C_' + this._history[ this._history.length - 1]
+      this.game.canvas.className = 'C_' + this._history[this._history.length - 1]
     } else {
       this.game.canvas.className = 'C_' + this.default
     }

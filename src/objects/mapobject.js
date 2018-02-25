@@ -101,7 +101,7 @@ class MulleMapObject extends MulleSprite {
       if (this.def.FrameList[ direction ][ name ]) {
         var def = this.def.FrameList[ direction ][ name ][0]
 
-        if (def != 'Dummy') {
+        if (def !== 'Dummy') {
           this.setDirectorMember(def)
         }
       }
@@ -109,7 +109,7 @@ class MulleMapObject extends MulleSprite {
       if (this.def.FrameList[ name ]) {
         var def = this.def.FrameList[ name ][0]
 
-        if (def != 'Dummy') {
+        if (def !== 'Dummy') {
           this.setDirectorMember(def)
         }
       }
@@ -159,7 +159,7 @@ class MulleMapObject extends MulleSprite {
       return
     }
 
-    if (this.def.type == '#dest' || this.def.type == '#rdest') {
+    if (this.def.type === '#dest' || this.def.type === '#rdest') {
       car.enabled = false
       car.engineAudio.stop()
       // car.engineAudio = null;
@@ -180,19 +180,19 @@ class MulleMapObject extends MulleSprite {
 
   onEnterInnerCallback (car) {
     /*
-			if( this.soundPlay ){
-				this.soundPlay.onStop.remove(this.onEnterInnerCallback, this);
-			 	this.soundPlay = null;
-			}
-		*/
+      if (this.soundPlay) {
+        this.soundPlay.onStop.remove(this.onEnterInnerCallback, this)
+        this.soundPlay = null
+      }
+    */
 
-    if (this.def.type == '#dest' || this.def.type == '#rdest') {
+    if (this.def.type === '#dest' || this.def.type === '#rdest') {
       this.game.state.states[ this.game.state.current ].saveSession(this)
 
       this.game.mulle.SetWhenDone = this.SetWhenDone
     }
 
-    if (this.def.type == '#dest') {
+    if (this.def.type === '#dest') {
       var dest = this.def.DirResource
 
       console.log('change scene', dest)
@@ -206,7 +206,7 @@ class MulleMapObject extends MulleSprite {
 
         car.enabled = true
       }
-    } else if (this.def.type == '#rdest') {
+    } else if (this.def.type === '#rdest') {
       var rdest = this.def.DirResource
 
       console.log('change rscene', rdest)
@@ -241,7 +241,7 @@ class MulleMapObject extends MulleSprite {
     if (this.def.CheckFor.Cache) {
       this.def.CheckFor.Cache.forEach((v) => {
         if (this.game.mulle.user.Car.hasCache(v)) {
-          if (this.def.IfFound == '#NoDisplay') {
+          if (this.def.IfFound === '#NoDisplay') {
             this.enabled = false
             this.renderable = false
             console.log('disable map object', this.id, this.def.CheckFor.Cache, this.game.mulle.user.Car.CacheList)

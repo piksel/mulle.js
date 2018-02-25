@@ -5,7 +5,7 @@ class MulleAudio extends Phaser.AudioSprite {
 
   playId (id) {
     for (var i in this.config.spritemap) {
-      if (this.config.spritemap[i].id && id == this.config.spritemap[i].id) {
+      if (this.config.spritemap[i].id && id === this.config.spritemap[i].id) {
         return this.play(i)
       }
     }

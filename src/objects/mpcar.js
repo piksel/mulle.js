@@ -41,11 +41,11 @@ class MulleMPCar extends MulleSprite {
     })
 
     /*
-		this.badge = new Mulle.Graphics(0, 0);
-		this.badge.beginFill('0x333333',1);
-		this.badge.drawRect( 0, 0, 300, 32);
-		this.badge.endFill();
-		*/
+    this.badge = new Mulle.Graphics(0, 0);
+    this.badge.beginFill('0x333333',1);
+    this.badge.drawRect( 0, 0, 300, 32);
+    this.badge.endFill();
+    */
 
     // this.addChild( this.badge );
     this.addChild(this.nametag)

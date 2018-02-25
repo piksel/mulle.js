@@ -4,7 +4,7 @@
  */
 'use strict'
 
-import MulleSave from 'struct/savedata'
+// import MulleSave from 'struct/savedata'
 
 import MulleSprite from 'objects/sprite'
 import MulleActor from 'objects/actor'
@@ -16,15 +16,15 @@ import MulleCarPart from 'objects/carpart'
  */
 class MulleBuildCar extends Phaser.Group {
   /**
-	 * Create car
-	 * @param  {Phaser.Game}	game
-	 * @param  {number}			x
-	 * @param  {number}			y
-	 * @param  {Array}			parts
-	 * @param  {Boolean}		isLocked
-	 * @param  {Boolean}		hasDriver
-	 * @return {void}
-	 */
+   * Create car
+   * @param  {Phaser.Game} game
+   * @param  {number}      x
+   * @param  {number}      y
+   * @param  {Array}       parts
+   * @param  {Boolean}     isLocked
+   * @param  {Boolean}     hasDriver
+   * @return {void}
+   */
   constructor (game, x, y, parts, isLocked = false, hasDriver = false) {
     super(game)
 
@@ -50,17 +50,17 @@ class MulleBuildCar extends Phaser.Group {
     this.mulleSit = null
     this.hasDriver = hasDriver
 
-    this.onAttach 	= new Phaser.Signal()
-    this.onDetach 	= new Phaser.Signal()
-    this.onRefresh 	= new Phaser.Signal()
+    this.onAttach = new Phaser.Signal()
+    this.onDetach = new Phaser.Signal()
+    this.onRefresh = new Phaser.Signal()
 
     this.refresh()
   }
 
   /**
-	 * Refresh visible object with parts set earlier
-	 * @return {void}
-	 */
+   * Refresh visible object with parts set earlier
+   * @return {void}
+   */
   refresh () {
     // console.log('refresh car', this.parts);
 
@@ -98,13 +98,13 @@ class MulleBuildCar extends Phaser.Group {
       }
 
       /*
-			if( partData.Covers ){
-				partData.Covers.forEach( (s) => {
-					console.log('covers', partId, s);
-					this.coveredPoints[s] = true;
-				});
-			}
-			*/
+      if (partData.Covers) {
+        partData.Covers.forEach( (s) => {
+          console.log('covers', partId, s)
+          this.coveredPoints[s] = true
+        })
+      }
+      */
 
       if (partData.UseView) {
         // let atlasId_fg = this.game.mulle.findFrame([cp1, cp2], partData.UseView);
@@ -204,10 +204,10 @@ class MulleBuildCar extends Phaser.Group {
   }
 
   /**
-	 * Attach a part by ID
-	 * @param  {number} partId
-	 * @return {Boolean} successful
-	 */
+   * Attach a part by ID
+   * @param  {number} partId
+   * @return {Boolean} successful
+   */
   attach (partId, noSave = false) {
     if (this.locked) return false
 
@@ -223,11 +223,11 @@ class MulleBuildCar extends Phaser.Group {
   }
 
   /**
-	 * Detach a part by ID
-	 * @param  {number}		partId
-	 * @param  {Boolean}	makePart	create part and start dragging
-	 * @return {Boolean}	successful
-	 */
+   * Detach a part by ID
+   * @param  {number}  partId
+   * @param  {Boolean} makePart   create part and start dragging
+   * @return {Boolean} successful
+   */
   detach (partId, makePart = false) {
     if (this.locked) return false
 
@@ -270,15 +270,15 @@ class MulleBuildCar extends Phaser.Group {
   }
 
   destroy () {
-    if (this.mulleSit && this.game.mulle.actors.mulle == this.mulleSit) this.game.mulle.actors.mulle = null
+    if (this.mulleSit && this.game.mulle.actors.mulle === this.mulleSit) this.game.mulle.actors.mulle = null
 
     super.destroy()
   }
 
   /**
-	 * Dump data into user save object
-	 * @return {void}
-	 */
+   * Dump data into user save object
+   * @return {void}
+   */
   save () {
     this.game.mulle.user.Car.Parts = this.parts
     // this.game.mulle.user.save();

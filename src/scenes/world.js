@@ -54,7 +54,7 @@ class WorldState extends MulleState {
 
     if (this.game.mulle.lastSession.mapObject) {
       this.mapObjects.forEach((o) => {
-        if (o.id == this.game.mulle.lastSession.mapObject) {
+        if (o.id === this.game.mulle.lastSession.mapObject) {
           console.log('disable object', o.id)
           o.enteredInner = true
           o.enteredOuter = true
@@ -69,20 +69,19 @@ class WorldState extends MulleState {
     this.driveCar.fuelCurrent = this.game.mulle.lastSession.carFuel
 
     /*
-		if( this.game.mulle.lastSession.SetWhenDone ){
+    if (this.game.mulle.lastSession.SetWhenDone) {
 
-			if( this.game.mulle.lastSession.SetWhenDone.Cache ){
+      if (this.game.mulle.lastSession.SetWhenDone.Cache) {
 
-				this.game.mulle.lastSession.SetWhenDone.Cache.forEach( (v) => {
-					this.game.mulle.user.Car.CacheList.push(v);
-				});
+        this.game.mulle.lastSession.SetWhenDone.Cache.forEach( (v) => {
+          this.game.mulle.user.Car.CacheList.push(v)
+        })
 
-				console.log('cache set', this.game.mulle.user.Car.CacheList);
+        console.log('cache set', this.game.mulle.user.Car.CacheList)
+      }
 
-			}
-
-		}
-		*/
+    }
+    */
   }
 
   removeSession () {
@@ -112,14 +111,14 @@ class WorldState extends MulleState {
 
     // console.log('main map', map);
 
-    var mapId 		= map.MapId
-    var mapName 	= map.MapImage
-    var topName 	= map.Topology
+    var mapId = map.MapId
+    var mapName = map.MapImage
+    var topName = map.Topology
 
-    // console.log('Map ID', mapId);
-    // console.log('Map data', mapData);
-    // console.log('Map name', mapName);
-    // console.log('Topology name', topName);
+    // console.log('Map ID', mapId)
+    // console.log('Map data', mapData)
+    // console.log('Map name', mapName)
+    // console.log('Topology name', topName)
 
     this.mapSprite.setDirectorMember('CDDATA.CXT', mapName)
 
@@ -147,7 +146,7 @@ class WorldState extends MulleState {
         let objectPos = Phaser.Point.parse(v[1])
         let objectOpt = v[2]
 
-        if (this.game.mulle.ObjectsDB[ objectId ].type == '#rdest') {
+        if (this.game.mulle.ObjectsDB[ objectId ].type === '#rdest') {
           // console.log('mapobject rdest', objectId);
 
           var currentRDest = this.activeWorld.rDests[ objectId ]
@@ -165,7 +164,7 @@ class WorldState extends MulleState {
 
         this.mapObjects.add(mapObject)
 
-        if (mapObject.def.type == '#Correct') {
+        if (mapObject.def.type === '#Correct') {
           console.debug('CORRECT', mapObject)
 
           var dist = this.driveCar.position.distance(mapObject.position)
@@ -292,19 +291,19 @@ class WorldState extends MulleState {
       this.game.add.existing(this.popupMenu)
 
       var rectList = {
-        Steering:	[116, 114, 197, 244],
-        Home:	[216, 116, 281, 249],
-        Diploma:	[316, 127, 368, 264],
-        quit:	[390, 125, 460, 266],
-        Cancel:	[470, 255, 528, 365]
+        Steering: [116, 114, 197, 244],
+        Home: [216, 116, 281, 249],
+        Diploma: [316, 127, 368, 264],
+        quit: [390, 125, 460, 266],
+        Cancel: [470, 255, 528, 365]
       }
 
       var soundList = {
-        Home:	'09d006v0',
-        Cancel:	'09d004v0',
-        Steering:	'09d005v0',
-        quit:	'09d003v0',
-        Diploma:	'09d002v0'
+        Home: '09d006v0',
+        Cancel: '09d004v0',
+        Steering: '09d005v0',
+        quit: '09d003v0',
+        Diploma: '09d002v0'
       }
 
       var currentAudio
@@ -383,7 +382,7 @@ class WorldState extends MulleState {
       this.chatInput.maxLength = 140
 
       this.chatInput.addEventListener('keyup', (e) => {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
           this.game.mulle.net.send({
             msg: this.chatInput.value
           })
@@ -549,12 +548,12 @@ class WorldState extends MulleState {
 
   networkSend () {
     if (this.game.mulle.net.socket) {
-      if (Object.keys(this.clients).length == 0) return
+      if (Object.keys(this.clients).length === 0) return
 
       if (
-        this.lastX == Math.round(this.driveCar.position.x) &&
-				this.lastY == Math.round(this.driveCar.position.y) &&
-				this.lastD == this.driveCar.direction
+        this.lastX === Math.round(this.driveCar.position.x) &&
+        this.lastY === Math.round(this.driveCar.position.y) &&
+        this.lastD === this.driveCar.direction
       ) {
         return
       }
@@ -575,7 +574,7 @@ class WorldState extends MulleState {
     // fuel meter
     var fuelAmount = Math.max(0, Math.min(16, Math.round((this.driveCar.fuelCurrent / this.driveCar.fuelMax) * 16)))
 
-    if (this.lastFuelAmount != fuelAmount) {
+    if (this.lastFuelAmount !== fuelAmount) {
       // this.spriteFuelNeedle.frameName = (27 + ( fuelAmount - 1 )  ).toString();
       this.spriteFuelNeedle.animations.frame = this.spriteFuelNeedle.animations._outputFrames[ fuelAmount ]
       this.lastFuelAmount = fuelAmount
@@ -604,9 +603,9 @@ class WorldState extends MulleState {
       if (p.isDown) this.driveCar.keySteer = 0
 
       if (this.driveCar.cursors.up.isDown ||
-				this.driveCar.cursors.down.isDown ||
-				this.driveCar.cursors.left.isDown ||
-				this.driveCar.cursors.right.isDown) {
+          this.driveCar.cursors.down.isDown ||
+          this.driveCar.cursors.left.isDown ||
+          this.driveCar.cursors.right.isDown) {
         this.driveCar.keySteer = 1
       }
     } else {
@@ -632,7 +631,7 @@ class WorldState extends MulleState {
         this.driveCar.Steering = 0
       }
 
-      var goDir = this.driveCar.direction
+      // var goDir = this.driveCar.direction
 
       if (p.isDown) {
         // turn around

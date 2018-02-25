@@ -12,13 +12,13 @@ import MulleSprite from 'objects/sprite'
  */
 class MulleActor extends MulleSprite {
   /**
-	 * Create
-	 * @param	{Phaser.Game} game 	Main game
-	 * @param	{number} x			x coordinate
-	 * @param	{number} y			y coordinate
-	 * @param	{string} name		Hardcoded actor name
-	 * @return	{void}
-	 */
+   * Create
+   * @param  {Phaser.Game} game  Main game
+   * @param  {number}      x     x coordinate
+   * @param  {number}      y     y coordinate
+   * @param  {string}      name  Hardcoded actor name
+   * @return {void}
+   */
   constructor (game, x, y, name) {
     super(game, x, y)
 
@@ -26,7 +26,7 @@ class MulleActor extends MulleSprite {
 
     var b = '00.CXT'
 
-    if (this.actorName == 'mulleDefault') {
+    if (this.actorName === 'mulleDefault') {
       this.setDirectorMember(b, 271)
 
       this.addAnimation('idle', [ [b, 271] ], 10, true, false)
@@ -47,7 +47,7 @@ class MulleActor extends MulleSprite {
       // this.addAnimation('turnRight', [ [b, 286],  [b, 287], ], 10, true, false);
 
       this.addAnimation('turnBack', [ [b, 285] ], 10, true, false)
-    } else if (this.actorName == 'mulleSit') {
+    } else if (this.actorName === 'mulleSit') {
       this.setDirectorMember(b, 245)
 
       this.addAnimation('idle', [ [b, 245] ], 0, true, false)
@@ -59,7 +59,7 @@ class MulleActor extends MulleSprite {
       this.addAnimation('talkPlayer', [ [b, 253], [b, 254], [b, 255], [b, 256], [b, 257], [b, 258], [b, 259], [b, 260] ], 10, true, false)
 
       this.addAnimation('smilePlayer', [ [b, 261], [b, 262], [b, 263] ], 5, true, false)
-    } else if (this.actorName == 'mulleMenuHead') {
+    } else if (this.actorName === 'mulleMenuHead') {
       var ten = '10.DXR'
 
       this.setDirectorMember(ten, 126)
@@ -79,7 +79,7 @@ class MulleActor extends MulleSprite {
         [ten, 136],
         [ten, 126]
       ], 10, false, false)
-    } else if (this.actorName == 'mulleMenuMouth') {
+    } else if (this.actorName === 'mulleMenuMouth') {
       b = '10.DXR'
 
       this.setDirectorMember(b, 115)
@@ -91,39 +91,39 @@ class MulleActor extends MulleSprite {
       this.addAnimation('lookPlayer', [ [b, 115] ], 5, true, false)
 
       this.addAnimation('talkPlayer', [ [b, 115], [b, 116], [b, 117], [b, 118], [b, 119], [b, 120], [b, 121], [b, 122] ], 10, true, false)
-    } else if (this.actorName == 'figge') {
+    } else if (this.actorName === 'figge') {
       b = '92.DXR'
 
       this.setDirectorMember(b, 17)
       this.addAnimation('idle', [ [b, 17] ])
       this.addAnimation('talkPlayer', [ [b, 17], [b, 18], [b, 19], [b, 20], [b, 21], [b, 22], [b, 23], [b, 24], [b, 25] ], 10, true, false)
-    } else if (this.actorName == 'salkaRight') {
+    } else if (this.actorName === 'salkaRight') {
       b = '85.DXR'
 
       this.setDirectorMember(b, 26)
       this.addAnimation('idle', [ [b, 26], [b, 27], [b, 28], [b, 29], [b, 30], [b, 29], [b, 28], [b, 27] ], 15, true, false)
-    } else if (this.actorName == 'salkaLeft') {
+    } else if (this.actorName === 'salkaLeft') {
       b = '92.DXR'
 
       this.setDirectorMember(b, 40)
       this.addAnimation('idle', [ [b, 40], [b, 41], [b, 42], [b, 43], [b, 44], [b, 43], [b, 42], [b, 41] ], 15, true, false)
-    } else if (this.actorName == 'buffa') {
+    } else if (this.actorName === 'buffa') {
       this.setDirectorMember(b, 214)
-      this.addAnimation('idle', [ [b, 214 ] ], 10, true, false)
-      this.addAnimation('scratch1', [ [b, 214 ], [b, 215] ], 10, true, false)
-      this.addAnimation('sleep_intro', [ [b, 214 ], [b, 216], [b, 217], [b, 218] ], 10, false, false)
-      this.addAnimation('sleep_loop', [ [b, 219 ], [b, 220] ], 1, false, false)
-      this.addAnimation('bark', [ [b, 222 ], [b, 223] ], 10, true, false)
-    } else if (this.actorName == 'judge') {
+      this.addAnimation('idle', [ [b, 214] ], 10, true, false)
+      this.addAnimation('scratch1', [ [b, 214], [b, 215] ], 10, true, false)
+      this.addAnimation('sleep_intro', [ [b, 214], [b, 216], [b, 217], [b, 218] ], 10, false, false)
+      this.addAnimation('sleep_loop', [ [b, 219], [b, 220] ], 1, false, false)
+      this.addAnimation('bark', [ [b, 222], [b, 223] ], 10, true, false)
+    } else if (this.actorName === 'judge') {
       b = '94.DXR'
 
       this.setDirectorMember(b, 31)
 
-      this.addAnimation('idle', [ [b, 31 ] ], 10, true)
+      this.addAnimation('idle', [ [b, 31] ], 10, true)
 
-      this.addAnimation('talk', [ [b, 43 ], [b, 44 ], [b, 45 ], [b, 46 ], [b, 47 ] ], 10, true)
+      this.addAnimation('talk', [ [b, 43], [b, 44], [b, 45], [b, 46], [b, 47] ], 10, true)
 
-      var raise = this.addAnimation('raiseScore', [ [b, 32 ], [b, 33 ], [b, 34 ], [b, 35 ] ], 5, false)
+      var raise = this.addAnimation('raiseScore', [ [b, 32], [b, 33], [b, 34], [b, 35] ], 5, false)
       raise.onComplete.add(() => {
         console.log('raise hook')
         this.silenceAnimation = 'idleScore'
@@ -132,36 +132,36 @@ class MulleActor extends MulleSprite {
         this.displayScore()
       })
 
-      this.addAnimation('idleScore', [ [b, 36 ] ], 10, false)
+      this.addAnimation('idleScore', [ [b, 36] ], 10, false)
 
-      this.addAnimation('talkScore', [ [b, 37 ], [b, 38 ], [b, 39 ], /* [b, 40 ], */ [b, 41 ], [b, 42 ] ], 10, true)
+      this.addAnimation('talkScore', [ [b, 37], [b, 38], [b, 39], /* [b, 40], */ [b, 41], [b, 42] ], 10, true)
 
-      var lower = this.addAnimation('lowerScore', [ [b, 35 ], [b, 34 ], [b, 33 ], [b, 32 ] ], 5, false)
+      var lower = this.addAnimation('lowerScore', [ [b, 35], [b, 34], [b, 33], [b, 32] ], 5, false)
       lower.onComplete.add(() => {
         console.log('lower hook')
         this.silenceAnimation = 'idle'
         this.talkAnimation = 'talk'
         this.animations.play('idle')
       })
-    } else if (this.actorName == 'figgeDoor') {
+    } else if (this.actorName === 'figgeDoor') {
       b = '03.DXR'
 
       this.setDirectorMember(b, 81)
 
-      var enter = this.addAnimation('enter', [ [b, 81 ], [b, 82 ], [b, 83 ], [b, 84 ], [b, 85 ] ], 10, false)
+      var enter = this.addAnimation('enter', [ [b, 81], [b, 82], [b, 83], [b, 84], [b, 85] ], 10, false)
       enter.onComplete.add(() => {
         this.animations.play('entered')
       })
 
-      this.addAnimation('entered', [ [b, 86 ] ], 10, true)
+      this.addAnimation('entered', [ [b, 86] ], 10, true)
 
-      this.addAnimation('exit', [ [b, 85 ], [b, 84 ], [b, 83 ], [b, 82 ], [b, 81 ] ], 10, false)
+      this.addAnimation('exit', [ [b, 85], [b, 84], [b, 83], [b, 82], [b, 81] ], 10, false)
 
-      this.addAnimation('talk', [ [b, 86 ], [b, 87 ], [b, 88 ], [b, 89 ], [b, 90 ], [b, 91], [b, 92], [b, 93] ], 10, true)
+      this.addAnimation('talk', [ [b, 86], [b, 87], [b, 88], [b, 89], [b, 90], [b, 91], [b, 92], [b, 93] ], 10, true)
 
       this.talkAnimation = 'talk'
       this.silenceAnimation = 'entered'
-    } else if (this.actorName == 'stureSad') {
+    } else if (this.actorName === 'stureSad') {
       b = '88.DXR'
 
       this.setDirectorMember(b, 42)
@@ -169,7 +169,7 @@ class MulleActor extends MulleSprite {
       this.addAnimation('idle', [ [b, 42] ], 10, false)
 
       this.addAnimation('talk', [ [b, 43], [b, 44], [b, 45], [b, 46], [b, 47] ], 10, true)
-    } else if (this.actorName == 'stureHappy') {
+    } else if (this.actorName === 'stureHappy') {
       b = '88.DXR'
 
       this.setDirectorMember(b, 34)
@@ -177,7 +177,7 @@ class MulleActor extends MulleSprite {
       this.addAnimation('idle', [ [b, 34] ], 10, false)
 
       this.addAnimation('talk', [ [b, 35], [b, 36], [b, 37], [b, 38], [b, 39] ], 8, true)
-    } else if (this.actorName == 'garson') {
+    } else if (this.actorName === 'garson') {
       b = '87.DXR'
 
       this.setDirectorMember(b, 15)
@@ -185,7 +185,7 @@ class MulleActor extends MulleSprite {
       this.addAnimation('idle', [ [b, 15] ], 10, false)
 
       this.addAnimation('talk', [ [b, 16], [b, 17], [b, 18] ], 8, true)
-    } else if (this.actorName == 'miaBody') {
+    } else if (this.actorName === 'miaBody') {
       b = '86.DXR'
 
       this.setDirectorMember(b, 55)
@@ -195,7 +195,7 @@ class MulleActor extends MulleSprite {
       this.addAnimation('catchIntro', [ [b, 55], [b, 56], [b, 57], [b, 58] ], 10, false)
 
       this.addAnimation('catchEnd', [ [b, 47], [b, 48], [b, 49], [b, 50] ], 10, false)
-    } else if (this.actorName == 'miaHead') {
+    } else if (this.actorName === 'miaHead') {
       b = '86.DXR'
 
       this.setDirectorMember(b, 62)
@@ -205,7 +205,7 @@ class MulleActor extends MulleSprite {
 
       this.addAnimation('idleCat', [ [b, 69] ], 10, false)
       this.addAnimation('talkCat', [ [b, 69], [b, 70], [b, 71], [b, 72], [b, 73], [b, 74] ], 10, true)
-    } else if (this.actorName == 'cat') {
+    } else if (this.actorName === 'cat') {
       b = '86.DXR'
 
       this.setDirectorMember(b, 30)
@@ -231,11 +231,11 @@ class MulleActor extends MulleSprite {
   }
 
   /**
-	 * Make actor talk
-	 * @param  {string}   id    Sound name/ID
-	 * @param  {function} onEnd End callback
-	 * @return {void}
-	 */
+   * Make actor talk
+   * @param  {string}   id    Sound name/ID
+   * @param  {function} onEnd End callback
+   * @return {void}
+   */
   talk (id, onEnd, onCue) {
     // console.log('talk', id, onEnd);
 
@@ -252,8 +252,8 @@ class MulleActor extends MulleSprite {
       this.onCue.add(onCue)
     } else {
       this.onCue.add((v) => {
-        if (v[1].toLowerCase() == 'silence') this.animations.play(this.silenceAnimation ? this.silenceAnimation : 'lookPlayer', 0)
-        if (v[1].toLowerCase() == 'talk') this.animations.play(this.talkAnimation ? this.talkAnimation : 'talkPlayer')
+        if (v[1].toLowerCase() === 'silence') this.animations.play(this.silenceAnimation ? this.silenceAnimation : 'lookPlayer', 0)
+        if (v[1].toLowerCase() === 'talk') this.animations.play(this.talkAnimation ? this.talkAnimation : 'talkPlayer')
       })
     }
 
@@ -277,26 +277,26 @@ class MulleActor extends MulleSprite {
       var lineAmount = lines.length
 
       if (this.talkAudio.extraData && this.talkAudio.extraData.cue) {
-        var onlyTalk = this.talkAudio.extraData.cue.find(function (v) { return v[1].toLowerCase() == 'talk' })
+        var onlyTalk = this.talkAudio.extraData.cue.find(function (v) { return v[1].toLowerCase() === 'talk' })
 
         cueAmount = onlyTalk ? onlyTalk.length : 1
       }
 
       console.debug('[talk-sub]', 'sentences', cueAmount)
 
-      if (cueAmount == 1) {
+      if (cueAmount === 1) {
         if (lineAmount > 1) {
           console.debug('[talk-sub]', this.actorName, 'only one cue, but multiple lines')
 
           /*
-						// add all at once
-						for( var t of lines ){
-							this.game.mulle.subtitle.showLine( t );
-						}
-					*/
+            // add all at once
+            for (var t of lines) {
+              this.game.mulle.subtitle.showLine(t);
+            }
+          */
 
           for (var i in lines) {
-            if (i == 0) {
+            if (i === 0) {
               this.game.mulle.subtitle.showLine(lines[ i ], subData.actor)
             } else {
               var del = 900 * Math.log(lines[i].length)
@@ -315,7 +315,7 @@ class MulleActor extends MulleSprite {
         console.debug('[talk-sub]', this.actorName, this.talkAudio.extraData.cue)
 
         this.onCue.add((v) => {
-          if (v[1].toLowerCase() == 'talk') {
+          if (v[1].toLowerCase() === 'talk') {
             this.game.mulle.subtitle.showLine(lines[ this.sentenceNum ], subData.actor)
             this.sentenceNum++
           }
@@ -348,9 +348,9 @@ class MulleActor extends MulleSprite {
   }
 
   /**
-	 * Internal audio play hook
-	 * @return {void}
-	 */
+   * Internal audio play hook
+   * @return {void}
+   */
   onAudioPlay () {
     // console.log('audio play');
 
@@ -375,9 +375,9 @@ class MulleActor extends MulleSprite {
   }
 
   /**
-	 * Internal audio stop hook
-	 * @return {void}
-	 */
+   * Internal audio stop hook
+   * @return {void}
+   */
   onAudioStop () {
     // console.log('audio stop');
 
@@ -389,9 +389,9 @@ class MulleActor extends MulleSprite {
   }
 
   /**
-	 * Stop talking, remove audio, and reset animation
-	 * @return {void}
-	 */
+   * Stop talking, remove audio, and reset animation
+   * @return {void}
+   */
   resetTalk () {
     // console.log('reset talk');
 

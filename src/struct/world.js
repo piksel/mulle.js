@@ -19,15 +19,15 @@ class MulleWorld {
 
     for (var y = 0; y < this.map.length; y++) {
       for (var x = 0; x < this.map[y].length; x++) {
-        var MapDef 		= this.map[y][x]
-        var MapId 		= MapDef.MapId
+        var MapDef = this.map[y][x]
+        var MapId = MapDef.MapId
 
         for (var i in MapDef.objects) {
           var objectId = MapDef.objects[i][0]
 
           var objectDef = this.game.mulle.ObjectsDB[ objectId ]
 
-          if (objectDef.type == '#rdest') {
+          if (objectDef.type === '#rdest') {
             var pos = new Phaser.Point(x + 1, y + 1)
 
             if (this.allRDests[ objectId ]) {
@@ -50,19 +50,19 @@ class MulleWorld {
 
     for (var i in this.allRDests) {
       var tempDest = this.allRDests[i]
-      // var tempNrOfMaps = tempDest.length;
-      // var tempMap = this.game.rnd.integerInRange(0, tempNrOfMaps);
-      // console.log('rdest', this.allRDests[i], tempDest[tempMap]);
-      this.rDests[i] = this.game.rnd.pick(tempDest) // this.allRDests[i][tempMap];
+      // var tempNrOfMaps = tempDest.length
+      // var tempMap = this.game.rnd.integerInRange(0, tempNrOfMaps)
+      // console.log('rdest', this.allRDests[i], tempDest[tempMap])
+      this.rDests[i] = this.game.rnd.pick(tempDest) // this.allRDests[i][tempMap]
     }
 
-    // console.log('rdests', this.rDests);
+    // console.log('rdests', this.rDests)
   }
 
   fromJSON (data) {
-    this.StartCoordinate 	= Phaser.Point.parse(data.StartCoordinate)
-    this.StartDirection 	= data.StartDirection
-    this.StartMap 			= Phaser.Point.parse(data.StartMap)
+    this.StartCoordinate = Phaser.Point.parse(data.StartCoordinate)
+    this.StartDirection = data.StartDirection
+    this.StartMap = Phaser.Point.parse(data.StartMap)
 
     this.map = []
 

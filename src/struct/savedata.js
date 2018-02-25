@@ -4,10 +4,6 @@ class MulleSave {
   constructor (game, data) {
     this.game = game
 
-    /*
-
-		*/
-
     if (data) {
       console.debug('[savedata]', 'supplied, apply', data.UserId)
 
@@ -64,18 +60,18 @@ class MulleSave {
       yard: {}
     }
 
-    this.NrOfBuiltCars 		= 0
-    this.Saves 				= []
-    this.CompletedMissions 	= []
-    this.OwnStuff 			= []
-    this.myLastPile 		= 1
-    this.gifts 				= []
-    this.toYardThroughDoor 	= true
-    this.givenMissions 		= []
-    this.figgeIsComing 		= false
-    this.missionIsComing 	= false
+    this.NrOfBuiltCars = 0
+    this.Saves = []
+    this.CompletedMissions = []
+    this.OwnStuff = []
+    this.myLastPile = 1
+    this.gifts = []
+    this.toYardThroughDoor = true
+    this.givenMissions = []
+    this.figgeIsComing = false
+    this.missionIsComing = false
 
-    this.language 			= this.game.mulle.defaultLanguage // 'swedish';
+    this.language = this.game.mulle.defaultLanguage // 'swedish'
   }
 
   addStuff (name) {
@@ -116,18 +112,18 @@ class MulleSave {
     // morphed car parts
     for (var i of this.Car.Parts) {
       var p = this.game.mulle.PartsDB[ i ]
-      if (p.master && partId == p.master) return true
+      if (p.master && partId === p.master) return true
     }
 
     return false
   }
 
   /**
-	 * @param {string}			Pile name
-	 * @param {number}			Part ID
-	 * @param {Phaser.Point}	Position in pile
-	 * @param {Boolean}			Don't save user data
-	 */
+   * @param {string}       Pile name
+   * @param {number}       Part ID
+   * @param {Phaser.Point} Position in pile
+   * @param {Boolean}      Don't save user data
+   */
   addPart (pile, partId, pos, noSave = false) {
     if (!this.Junk[pile]) return false
 
@@ -179,24 +175,24 @@ class MulleSave {
   }
 
   fromJSON (data) {
-    this.UserId 			= data.UserId
+    this.UserId = data.UserId
 
-    this.Car 				= new MulleCar(this.game, data.Car)
+    this.Car = new MulleCar(this.game, data.Car)
 
-    this.Junk 				= data.Junk
+    this.Junk = data.Junk
 
-    this.NrOfBuiltCars 		= data.NrOfBuiltCars
-    this.Saves 				= data.Saves
-    this.CompletedMissions 	= data.CompletedMissions
-    this.OwnStuff 			= data.OwnStuff ? data.OwnStuff : []
-    this.myLastPile 		= data.myLastPile
-    this.gifts 				= data.gifts
-    this.toYardThroughDoor 	= data.toYardThroughDoor
-    this.givenMissions 		= data.givenMissions
-    this.figgeIsComing 		= data.figgeIsComing
-    this.missionIsComing 	= data.missionIsComing
+    this.NrOfBuiltCars = data.NrOfBuiltCars
+    this.Saves = data.Saves
+    this.CompletedMissions = data.CompletedMissions
+    this.OwnStuff = data.OwnStuff ? data.OwnStuff : []
+    this.myLastPile = data.myLastPile
+    this.gifts = data.gifts
+    this.toYardThroughDoor = data.toYardThroughDoor
+    this.givenMissions = data.givenMissions
+    this.figgeIsComing = data.figgeIsComing
+    this.missionIsComing = data.missionIsComing
 
-    this.language			= this.game.mulle.defaultLanguage // data.language ? data.language : this.game.mulle.defaultLanguage;
+    this.language = this.game.mulle.defaultLanguage // data.language ? data.language : this.game.mulle.defaultLanguage
   }
 
   toJSON () {
@@ -204,11 +200,11 @@ class MulleSave {
       UserId: this.UserId,
       Car: this.Car,
       Junk: this.Junk,
-      // NrOfBuiltCars:	this.NrOfBuiltCars,
+      // NrOfBuiltCars: this.NrOfBuiltCars,
       CompletedMissions: this.CompletedMissions,
-      OwnStuff:	this.OwnStuff,
+      OwnStuff: this.OwnStuff,
       givenMissions: this.givenMissions,
-      myLastPile:	this.myLastPile
+      myLastPile: this.myLastPile
     }
   }
 }

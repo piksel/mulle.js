@@ -7,8 +7,8 @@ import Phaser from 'expose-loader?Phaser!phaser-ce/build/custom/phaser-split.js'
 
 // import Phaser from 'phaser-ce';
 
-console.debug('Import Game')
 import MulleGame from 'game'
+console.debug('Import Game')
 
 console.debug('Create game')
 var game = new MulleGame()

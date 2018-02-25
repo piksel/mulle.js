@@ -20,8 +20,8 @@ class SaftfabrikState extends MulleState {
 
     this.car = null
 
-    var hasLemonade 	= this.game.mulle.user.Car.hasCache('#Lemonade')
-    var hasTank 		= this.game.mulle.user.Car.hasPart(172)
+    // var hasLemonade = this.game.mulle.user.Car.hasCache('#Lemonade')
+    var hasTank = this.game.mulle.user.Car.hasPart(172)
 
     var background = new MulleSprite(this.game, 320, 240)
     background.setDirectorMember(this.DirResource, 208)
@@ -83,27 +83,27 @@ class SaftfabrikState extends MulleState {
       }
     })
 
-    // var dog = new MulleSprite(this.game, 480, 386);
-    // dog.setDirectorMember('85.DXR', 26);
-    // this.game.add.existing(dog);
+    // var dog = new MulleSprite(this.game, 480, 386)
+    // dog.setDirectorMember('85.DXR', 26)
+    // this.game.add.existing(dog)
 
     // narrator
-    // this.game.mulle.playAudio('87d001v0');
+    // this.game.mulle.playAudio('87d001v0')
 
     // slut saft
-    // this.game.mulle.playAudio('87d002v0');
+    // this.game.mulle.playAudio('87d002v0')
 
     // nja
-    // this.game.mulle.playAudio('87d003v0');
+    // this.game.mulle.playAudio('87d003v0')
 
-    // this.game.mulle.playAudio('87d004v0');
+    // this.game.mulle.playAudio('87d004v0')
 
-    // this.game.mulle.playAudio('87d005v0');
+    // this.game.mulle.playAudio('87d005v0')
 
-    // this.game.mulle.playAudio('87d006v0');
+    // this.game.mulle.playAudio('87d006v0')
 
     // nu är ju saftfabriken stängd
-    // this.game.mulle.playAudio('87d007v0');
+    // this.game.mulle.playAudio('87d007v0')
   }
 
   shutdown () {

@@ -1,4 +1,5 @@
-var stdin = process.stdin, stdout = process.stdout
+var stdin = process.stdin
+var stdout = process.stdout
 
 var ShockwaveListParser = require('./listparser.js').ShockwaveListParser
 

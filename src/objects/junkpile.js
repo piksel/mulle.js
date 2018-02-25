@@ -21,7 +21,7 @@ class MulleJunkPile {
         Pile3: { 153: new Phaser.Point(512, 153), 131: new Phaser.Point(464, 298), 307: new Phaser.Point(246, 285), 112: new Phaser.Point(561, 293), 30: new Phaser.Point(339, 189) },
         Pile4: { 190: new Phaser.Point(182, 143), 23: new Phaser.Point(346, 203), 126: new Phaser.Point(178, 301), 211: new Phaser.Point(75, 193) },
         Pile5: { 6: new Phaser.Point(192, 377), 90: new Phaser.Point(102, 290), 203: new Phaser.Point(33, 122), 158: new Phaser.Point(186, 164), 119: new Phaser.Point(375, 268) },
-        Pile6: { 2: new Phaser.Point(160, 351), 214: new Phaser.Point(130, 172), 210: new Phaser.Point(281, 300), 121: new Phaser.Point(85, 275)},
+        Pile6: { 2: new Phaser.Point(160, 351), 214: new Phaser.Point(130, 172), 210: new Phaser.Point(281, 300), 121: new Phaser.Point(85, 275) },
         shopFloor: { 200: new Phaser.Point(160, 351) },
         yard: {}
       }
@@ -49,13 +49,13 @@ class MulleJunkPile {
     if (pile.rect) {
       this.dropRects = []
       for (var i = 0; i < pile.rect.length; i++) {
-        var rect 		= new Phaser.Rectangle()
-        rect.left 		= pile.rect[i][0]
-        rect.top 		= pile.rect[i][1]
-        rect.right 		= pile.rect[i][2]
-        rect.bottom 	= pile.rect[i][3]
+        var rect = new Phaser.Rectangle()
+        rect.left = pile.rect[i][0]
+        rect.top = pile.rect[i][1]
+        rect.right = pile.rect[i][2]
+        rect.bottom = pile.rect[i][3]
         this.dropRects.push(rect)
-        // game.debug.geom(rect,'rgba(255,0,0,.6)');
+        // game.debug.geom(rect,'rgba(255,0,0,.6)')
       }
     } else {
       this.dropRects = false
@@ -77,33 +77,33 @@ class MulleJunkPile {
   }
 
   loadParts () {
+    /*
     var parts = this.game.mulle.user.Junk[ this.id ]
 
-    /*
-		for( var partId in parts ){
+    for (var partId in parts) {
 
-			var pos = this.game.mulle.user.Junk.shopFloor[partId];
+      var pos = this.game.mulle.user.Junk.shopFloor[partId]
 
-			var p = new MulleCarPart(this.game, partId, pos.x, pos.y);
-			p.car = this.car;
+      var p = new MulleCarPart(this.game, partId, pos.x, pos.y)
+      p.car = this.car
 
-			p.setJunkPile('shopFloor');
+      p.setJunkPile('shopFloor')
 
-			p.dropTargets.push([door_junk, (d) => {
+      p.dropTargets.push([door_junk, (d) => {
 
-				d.moveToJunkPile('Pile1');
-				this.game.mulle.saveData();
+        d.moveToJunkPile('Pile1')
+        this.game.mulle.saveData()
 
-				d.destroy();
+        d.destroy()
 
-				return true;
+        return true
 
-			}]);
+      }])
 
-			this.junkParts.addChild(p);
+      this.junkParts.addChild(p)
 
-		}
-		*/
+    }
+    */
   }
 
   makeContainer () {
@@ -114,7 +114,7 @@ class MulleJunkPile {
   spawnParts () {
     if (!this.container) return
 
-    var usePhysics = this.id.substr(0, 4) == 'Pile'
+    var usePhysics = this.id.substr(0, 4) === 'Pile'
 
     for (let partId in this.parts) {
       let p = new MulleCarPart(this.game, partId, this.parts[partId].x, this.parts[partId].y, usePhysics)
@@ -122,36 +122,36 @@ class MulleJunkPile {
       p.setJunkPile(this, true)
 
       /*
-			if( this.car ) p.car = this.car;
+      if (this.car) p.car = this.car;
 
-			if( this.dropRects ) p.dropRects = this.dropRects;
+      if (this.dropRects) p.dropRects = this.dropRects
 
-			if( this.junkLocations ){
+      if (this.junkLocations) {
 
-				this.junkLocations.forEach( (loc) => {
+        this.junkLocations.forEach( (loc) => {
 
-					p.dropTargets.push([loc.obj, (d) => {
+          p.dropTargets.push([loc.obj, (d) => {
 
-						console.log('drop on target', loc);
+            console.log('drop on target', loc)
 
-						this.removePart( partId );
+            this.removePart(partId)
 
-						this.game.mulle.user.Junk[ loc.id ].addPart( partId, p.position.x, p.position.y );
+            this.game.mulle.user.Junk[ loc.id ].addPart( partId, p.position.x, p.position.y )
 
-						this.game.mulle.user.save();
+            this.game.mulle.user.save()
 
-						d.destroy();
+            d.destroy()
 
-						return true;
+            return true
 
-					}]);
+          }])
 
-				});
+        })
 
-			}
-			*/
+      }
+      */
 
-      // this.container.addChild(p);
+      // this.container.addChild(p)
     }
   }
 

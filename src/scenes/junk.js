@@ -3,22 +3,22 @@
 import MulleState from 'scenes/base'
 
 import MulleSprite from 'objects/sprite'
-import MulleActor from 'objects/actor'
+// import MulleActor from 'objects/actor'
 import MulleButton from 'objects/button'
 import MulleCarPart from 'objects/carpart'
 
 /* rects = [
 
-  	Pile1:[rect(193, 260, 637, 400), rect(291, 193, 637, 263), rect(361, 153, 636, 194)],
-  	Pile2:[rect(210, 252, 654, 380), rect(256, 174, 651, 262), rect(365, 120, 667, 188)],
-  	Pile3:[rect(150, 281, 639, 380), rect(127, 162, 643, 291), rect(183, 100, 639, 164)],
-  	Pile4:[rect(0, 324, 425, 404), rect(3, 174, 425, 325), rect(3, 90, 425, 182)],
-  	Pile5:[rect(6, 268, 450, 412), rect(5, 180, 411, 275), rect(0, 100, 303, 189)],
-  	Pile6:[rect(0, 275, 400, 390), rect(1, 201, 368, 283), rect(4, 135, 270, 203)],
-  	shopFloor:[rect(20, 400, 600, 460)],
-  	yard:[rect(290, 400, 580, 445)],
+    Pile1:[rect(193, 260, 637, 400), rect(291, 193, 637, 263), rect(361, 153, 636, 194)],
+    Pile2:[rect(210, 252, 654, 380), rect(256, 174, 651, 262), rect(365, 120, 667, 188)],
+    Pile3:[rect(150, 281, 639, 380), rect(127, 162, 643, 291), rect(183, 100, 639, 164)],
+    Pile4:[rect(0, 324, 425, 404), rect(3, 174, 425, 325), rect(3, 90, 425, 182)],
+    Pile5:[rect(6, 268, 450, 412), rect(5, 180, 411, 275), rect(0, 100, 303, 189)],
+    Pile6:[rect(0, 275, 400, 390), rect(1, 201, 368, 283), rect(4, 135, 270, 203)],
+    shopFloor:[rect(20, 400, 600, 460)],
+    yard:[rect(290, 400, 580, 445)],
 
-  	PileDoors:[rect(8, 106, 56, 323), rect(44, 84, 115, 224), rect(111, 41, 151, 103), rect(463, 47, 503, 107), rect(512, 69, 592, 208), rect(572, 94, 637, 312)]]
+    PileDoors:[rect(8, 106, 56, 323), rect(44, 84, 115, 224), rect(111, 41, 151, 103), rect(463, 47, 503, 107), rect(512, 69, 592, 208), rect(572, 94, 637, 312)]]
 */
 
 class JunkState extends MulleState {
@@ -46,10 +46,13 @@ class JunkState extends MulleState {
   savePile () {
     console.log('save junk parts', this.currentPile)
 
-    this.game.mulle.user.Junk['Pile' + this.currentPile ] = {}
+    this.game.mulle.user.Junk['Pile' + this.currentPile] = {}
 
     this.junkParts.forEach((obj) => {
-      this.game.mulle.user.Junk['Pile' + this.currentPile ][ obj.part_id ] = { x: obj.x, y: obj.y }
+      this.game.mulle.user.Junk['Pile' + this.currentPile][obj.part_id] = {
+        x: obj.x,
+        y: obj.y
+      }
     })
 
     this.game.mulle.user.save()
@@ -81,8 +84,8 @@ class JunkState extends MulleState {
     if (this.doorShop) this.doorShop.destroy()
 
     this.doorShop = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.door ],
-      imageHover: ['02.DXR', pile.door + 1 ],
+      imageDefault: ['02.DXR', pile.door],
+      imageHover: ['02.DXR', pile.door + 1],
       soundDefault: '02e015v0',
       soundHover: '02e016v0',
       click: () => {
@@ -95,8 +98,8 @@ class JunkState extends MulleState {
     if (this.arrowRight) this.arrowRight.destroy()
 
     this.arrowRight = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.right ],
-      imageHover: ['02.DXR', pile.right + 1 ],
+      imageDefault: ['02.DXR', pile.right],
+      imageHover: ['02.DXR', pile.right + 1],
       click: () => {
         this.setPile(rightPile)
       }
@@ -106,8 +109,8 @@ class JunkState extends MulleState {
     if (this.arrowLeft) this.arrowLeft.destroy()
 
     this.arrowLeft = new MulleButton(this.game, 320, 240, {
-      imageDefault: ['02.DXR', pile.left ],
-      imageHover: ['02.DXR', pile.left + 1 ],
+      imageDefault: ['02.DXR', pile.left],
+      imageHover: ['02.DXR', pile.left + 1],
       click: () => {
         this.setPile(leftPile)
       }
@@ -118,34 +121,34 @@ class JunkState extends MulleState {
     this.dropRects = []
 
     for (var i = 0; i < pile.rect.length; i++) {
-      var rect 		= new Phaser.Rectangle()
-      rect.left 		= pile.rect[i][0]
-      rect.top 		= pile.rect[i][1]
-      rect.right 		= pile.rect[i][2]
-      rect.bottom 	= pile.rect[i][3]
+      var rect = new Phaser.Rectangle()
+      rect.left = pile.rect[i][0]
+      rect.top = pile.rect[i][1]
+      rect.right = pile.rect[i][2]
+      rect.bottom = pile.rect[i][3]
       this.dropRects.push(rect)
-      // game.debug.geom(rect,'rgba(255,0,0,.6)');
+      // game.debug.geom(rect,'rgba(255,0,0,.6)')
     }
 
     /*
-		this.junkPile = this.game.mulle.user.Junk['Pile' + this.currentPile];
+    this.junkPile = this.game.mulle.user.Junk['Pile' + this.currentPile]
 
-		this.junkParts = this.junkPile.makeContainer();
+    this.junkParts = this.junkPile.makeContainer()
 
-		this.junkPile.addJunkLocation( this.doorShop, 'shopFloor' );
-		this.junkPile.addJunkLocation( this.arrowLeft, 'Pile' + leftPile );
-		this.junkPile.addJunkLocation( this.arrowRight, 'Pile' + rightPile );
+    this.junkPile.addJunkLocation(this.doorShop, 'shopFloor')
+    this.junkPile.addJunkLocation(this.arrowLeft, 'Pile' + leftPile)
+    this.junkPile.addJunkLocation(this.arrowRight, 'Pile' + rightPile)
 
-		this.junkPile.spawnParts();
-		*/
+    this.junkPile.spawnParts()
+    */
 
     this.junkParts = this.game.add.group()
 
-    // var jnk = game.mulle.UsersDB[ game.mulle.activeProfile ].Junk['Pile' + this.currentPile];
+    // var jnk = game.mulle.UsersDB[ game.mulle.activeProfile ].Junk['Pile' + this.currentPile]
 
     console.log('spawn junk parts')
 
-    var jnk = this.game.mulle.user.Junk['Pile' + this.currentPile ]
+    var jnk = this.game.mulle.user.Junk['Pile' + this.currentPile]
 
     for (let partId in jnk) {
       console.log(partId)
@@ -175,7 +178,10 @@ class JunkState extends MulleState {
       p.dropTargets.push([this.arrowLeft, (d) => {
         d.destroy()
 
-        this.game.mulle.user.Junk['Pile' + leftPile ][partId] = { x: this.game.rnd.integerInRange(0, 640), y: 240 }
+        this.game.mulle.user.Junk['Pile' + leftPile][partId] = {
+          x: this.game.rnd.integerInRange(0, 640),
+          y: 240
+        }
 
         this.savePile()
 
@@ -188,7 +194,10 @@ class JunkState extends MulleState {
       p.dropTargets.push([this.arrowRight, (d) => {
         d.destroy()
 
-        this.game.mulle.user.Junk['Pile' + rightPile ][partId] = { x: this.game.rnd.integerInRange(0, 640), y: 240 }
+        this.game.mulle.user.Junk['Pile' + rightPile][partId] = {
+          x: this.game.rnd.integerInRange(0, 640),
+          y: 240
+        }
 
         this.savePile()
 
@@ -201,9 +210,9 @@ class JunkState extends MulleState {
     }
 
     /*
-		var poly = new Phaser.Polygon();
-		poly.setTo([ new Phaser.Point(200, 100), new Phaser.Point(350, 100), new Phaser.Point(375, 200), new Phaser.Point(150, 200) ]);
-		*/
+    var poly = new Phaser.Polygon()
+    poly.setTo([ new Phaser.Point(200, 100), new Phaser.Point(350, 100), new Phaser.Point(375, 200), new Phaser.Point(150, 200) ])
+    */
   }
 
   create () {
@@ -223,14 +232,14 @@ class JunkState extends MulleState {
     this.game.mulle.playAudio('02e010v0')
 
     /*
-		var go_road = new MulleButton(this.game, 320, 240, {
-			imageDefault: ['yard-sprites-0', '16'],
-			click: () => {
-				game.state.start('world');
-			}
-		});
-		this.game.add.existing(go_road);
-		*/
+    var go_road = new MulleButton(this.game, 320, 240, {
+      imageDefault: ['yard-sprites-0', '16'],
+      click: () => {
+        game.state.start('world')
+      }
+    })
+    this.game.add.existing(go_road)
+    */
   }
 
   shutdown () {

@@ -1,7 +1,7 @@
 const WebSocket = require('ws')
 const readline = require('readline')
 const moment = require('moment')
-const colors = require('colors')
+// const colors = require('colors')
 
 const rlCli = readline.createInterface({
   input: process.stdin,
@@ -57,7 +57,7 @@ class MulleServer {
     var kicked = false
 
     for (var client of this.wss.clients) {
-      if (client.clientId && client.clientId == id) {
+      if (client.clientId && client.clientId === id) {
         client.send(JSON.stringify({ error: reason ? 'Kicked. Reason: ' + reason : 'Kicked.' }))
 
         client.terminate()
@@ -75,7 +75,7 @@ class MulleServer {
     var banned = false
 
     for (var client of this.wss.clients) {
-      if (client.clientId && client.clientId == id) {
+      if (client.clientId && client.clientId === id) {
         client.send(JSON.stringify({ error: reason ? 'Banned. Reason: ' + reason : 'Banned.' }))
 
         client.terminate()
@@ -181,7 +181,7 @@ class MulleServer {
           // change scene
         } else if (j.scene) {
           // enter world
-          if (ws.currentScene != 'world' && j.scene == 'world') {
+          if (ws.currentScene !== 'world' && j.scene === 'world') {
             this.wss.clients.forEach((client) => {
               if (client !== ws && client.readyState === WebSocket.OPEN) {
                 // client.send('joined');
@@ -195,7 +195,7 @@ class MulleServer {
             ws.isInWorld = true
 
             // leave world
-          } else if (ws.currentScene == 'world' && j.scene != 'world') {
+          } else if (ws.currentScene === 'world' && j.scene !== 'world') {
             this.wss.clients.forEach((client) => {
               if (client !== ws && client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify({ leave: ws.clientId }))
@@ -215,14 +215,14 @@ class MulleServer {
         } else if (j.map) {
           // for the current player
 
-          if (ws.currentMap && ws.currentMap == j.map) {
+          if (ws.currentMap && ws.currentMap === j.map) {
             this.log(('Client ' + this.pclient(ws) + ' spamming map #' + j.map + '.').red)
             return
           }
 
           var visibleClients = {}
           this.wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN && client.currentScene == 'world' && client.currentMap == j.map) {
+            if (client.readyState === WebSocket.OPEN && client.currentScene === 'world' && client.currentMap === j.map) {
               visibleClients[ client.clientId ] = {
 
                 x: client.currentX,
@@ -253,7 +253,7 @@ class MulleServer {
             var visibleClients = {}
 
             this.wss.clients.forEach((sub) => {
-              if (client !== sub && sub.readyState === WebSocket.OPEN && sub.currentScene == 'world' && sub.currentMap == client.currentMap) {
+              if (client !== sub && sub.readyState === WebSocket.OPEN && sub.currentScene === 'world' && sub.currentMap === client.currentMap) {
                 visibleClients[ sub.clientId ] = {
 
                   x: sub.currentX,
@@ -276,7 +276,7 @@ class MulleServer {
           })
 
           // race times
-          if (j.map == 28) {
+          if (j.map === 28) {
             this.sendRaceTimes(ws)
           }
 
@@ -287,9 +287,9 @@ class MulleServer {
           this.wss.clients.forEach((client) => {
             if (
               client !== ws &&
-							client.readyState === WebSocket.OPEN &&
-							client.currentScene == 'world' &&
-							client.currentMap == ws.currentMap
+              client.readyState === WebSocket.OPEN &&
+              client.currentScene === 'world' &&
+              client.currentMap === ws.currentMap
             ) {
               client.send(
                 JSON.stringify({
@@ -312,7 +312,7 @@ class MulleServer {
 
           // broadcast to everyone
           this.wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN && client.currentScene == 'world') {
+            if (client.readyState === WebSocket.OPEN && client.currentScene === 'world') {
               client.send(
                 JSON.stringify({
                   p: ws.playerName,
@@ -386,15 +386,15 @@ class MulleServer {
 
     // debug
     /*
-		this.debugInterval = setInterval( () => {
-  			this.log( ( 'Debug text! ' + Date.now() ).green );
-		}, 500);
-		*/
+    this.debugInterval = setInterval( () => {
+      this.log(('Debug text! ' + Date.now()).green);
+    }, 500);
+    */
   }
 
   broadcast (text, noLog = false) {
     this.wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN && client.currentScene == 'world') {
+      if (client.readyState === WebSocket.OPEN && client.currentScene === 'world') {
         client.send(
           JSON.stringify({
             p: 'console',
@@ -413,7 +413,7 @@ class MulleServer {
       cl.send(JSON.stringify({ race: this.raceTimes }))
     } else {
       this.wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client.currentScene == 'world' && client.currentMap == 28) {
+        if (client.readyState === WebSocket.OPEN && client.currentScene === 'world' && client.currentMap === 28) {
           client.send(JSON.stringify({ race: this.raceTimes }))
         }
       })
@@ -435,22 +435,22 @@ rlCli.on('line', (line) => {
 
   if (!mainArg) return
 
-  if (mainArg == 'status') {
+  if (mainArg === 'status') {
     ms.log('Connected players: ' + ms.wss.clients.size)
 
     ms.log('Lists: all, world')
 
-    if (args[1] == 'all') {
+    if (args[1] === 'all') {
       ms.wss.clients.forEach((client) => {
         ms.log(' ' + client.clientId + ' | ' + client.playerName + ' | ' + client.currentScene)
 
-        if (client.currentScene == 'world') {
+        if (client.currentScene === 'world') {
           ms.log('  ' + client.currentMap + ' - ' + client.currentX + ',' + client.currentY)
         }
       })
-    } else if (args[1] == 'world') {
+    } else if (args[1] === 'world') {
       ms.wss.clients.forEach((client) => {
-        if (client.currentScene == 'world') {
+        if (client.currentScene === 'world') {
           ms.log(' ' + client.clientId + ' | ' + client.playerName + ' | ' + client.currentScene)
 
           ms.log('  ' + client.currentMap + ' - ' + client.currentX + ',' + client.currentY)
@@ -461,7 +461,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'msg') {
+  if (mainArg === 'msg') {
     var text = args.slice(1).join(' ').trim()
 
     if (!text) return
@@ -473,7 +473,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'alert') {
+  if (mainArg === 'alert') {
     var text = args.slice(1).join(' ').trim()
 
     if (!text) return
@@ -489,7 +489,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'block') {
+  if (mainArg === 'block') {
     var mod = args[1]
 
     if (ms.blockInfo[ mod ]) {
@@ -505,7 +505,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'kickid') {
+  if (mainArg === 'kickid') {
     var id = parseInt(args[1])
 
     if (!id) {
@@ -526,7 +526,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'banid') {
+  if (mainArg === 'banid') {
     var id = parseInt(args[1])
 
     if (!id) {
@@ -547,7 +547,7 @@ rlCli.on('line', (line) => {
     return
   }
 
-  if (mainArg == 'quit' || mainArg == 'exit') {
+  if (mainArg === 'quit' || mainArg === 'exit') {
     ms.log('Shutting down.'.red)
 
     for (var client of ms.wss.clients) {

@@ -7,15 +7,15 @@ class MulleCar {
     this.criteria = {}
 
     if (data) {
-      this.Parts		= data.Parts
-      this.Name		= data.Name
-      this.Medals		= data.Medals
-      this.CacheList	= data.CacheList
+      this.Parts = data.Parts
+      this.Name = data.Name
+      this.Medals = data.Medals
+      this.CacheList = data.CacheList
     } else {
-      this.Parts		= [1, 82, 133, 152] // [1, 12, 82, 133, 152, 7, 307, 142, 145, 122, 201];
-      this.Name		= ''
-      this.Medals		= []
-      this.CacheList	= []
+      this.Parts = [1, 82, 133, 152] // [1, 12, 82, 133, 152, 7, 307, 142, 145, 122, 201];
+      this.Name = ''
+      this.Medals = []
+      this.CacheList = []
     }
 
     // console.log('cardata created');
@@ -154,7 +154,7 @@ class MulleCar {
     })
 
     // quick
-    if (this.properties.speed == 5) {
+    if (this.properties.speed === 5) {
       this.quickProperties.speed = this.properties.speed * 27 / 25
     } else {
       this.quickProperties.speed = this.properties.speed * 20 / 25
@@ -162,7 +162,7 @@ class MulleCar {
 
     this.quickProperties.break = this.properties.break * 3 / 100
 
-    if (this.quickProperties.acceleration == 0) {
+    if (this.quickProperties.acceleration === 0) {
       this.quickProperties.acceleration = 1
     }
 
@@ -208,71 +208,71 @@ class MulleCar {
     }
 
     // 03d018v0 brakes
-    if (this.getProperty('break') == 0) {
+    if (this.getProperty('break') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d018v0')
       return false
     }
 
     // consumption
-    if (this.getProperty('fuelconsumption') == 0) {
+    if (this.getProperty('fuelconsumption') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d013v0')
       return false
     }
 
     // 03d014v0 battery
-    if (this.getProperty('electricvolume') == 0) {
+    if (this.getProperty('electricvolume') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d014v0')
       return false
     }
 
     // 03d015v0 fuel
-    if (this.getProperty('fuelvolume') == 0) {
+    if (this.getProperty('fuelvolume') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d015v0')
       return false
     }
 
     // 03d016v0 gearbox
-    if (this.getProperty('acceleration') == 0) {
+    if (this.getProperty('acceleration') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d016v0')
       return false
     }
 
     // 03d017v0 steering wheel
-    if (this.getProperty('steering') == 0) {
+    if (this.getProperty('steering') === 0) {
       if (talk) this.game.mulle.actors.mulle.talk('03d017v0')
       return false
     }
 
     // 03d019v0 horn
     /*
-		if( this.getProperty('horn') == 0 ){
-			if(talk) this.game.mulle.actors.mulle.talk('03d019v0');
-			return false;
-		}
-		*/
+    if (this.getProperty('horn') === 0) {
+      if (talk) this.game.mulle.actors.mulle.talk('03d019v0')
+      return false
+    }
+    */
 
     // 03d020v0 exhaust
     /*
-		if( this.getProperty('exhaustpipe') == 0 ){
-			if(talk) this.game.mulle.actors.mulle.talk('03d020v0');
-			return false;
-		}
-		*/
+    if (this.getProperty('exhaustpipe') === 0 ) {
+      if (talk) this.game.mulle.actors.mulle.talk('03d020v0')
+      return false
+    }
+    */
 
     // 03d021v0 lamps
     /*
-		if( this.getProperty('lamps') == 0 ){
-			if(talk) this.game.mulle.actors.mulle.talk('03d021v0');
-			return false;
-		}
-		*/
+    if (this.getProperty('lamps') === 0) {
+      if (talk) this.game.mulle.actors.mulle.talk('03d021v0')
+      return false
+    }
+    */
 
     /*
-		if(!this.getProperty('grip')){
-			if(talk) this.game.mulle.actors.mulle.talk('03d012v0');
-			return false;
-		}
-		*/
+    if (!this.getProperty('grip')) {
+      if (talk) this.game.mulle.actors.mulle.talk('03d012v0')
+      return false
+    }
+    */
 
     return true
   }

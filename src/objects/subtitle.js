@@ -188,30 +188,30 @@ class MulleSubtitle {
       let line = this.textLines[i].text
 
       /*
-			if( this.textLines[i].actor && this.actorColors[ this.textLines[i].actor ] ){
-				this.textObject.addColor(this.actorColors[ this.textLines[i].actor ], text.length);
-			}else{
-				this.textObject.addColor('#ffffff', text.length);
-			}
-			*/
+      if (this.textLines[i].actor && this.actorColors[ this.textLines[i].actor ]) {
+        this.textObject.addColor(this.actorColors[ this.textLines[i].actor ], text.length)
+      } else {
+        this.textObject.addColor('#ffffff', text.length)
+      }
+      */
 
       /*
-			var hReg = /\{([A-Za-z0-9]+)\}/g;
+      var hReg = /\{([A-Za-z0-9]+)\}/g
 
-			var hlMatch;
-			while( ( hlMatch = hReg.exec( this.textLines[i].text ) ) !== null ){
+      var hlMatch
+      while((hlMatch = hReg.exec(this.textLines[i].text)) !== null) {
 
-				console.log('hlMatch', hlMatch);
+        console.log('hlMatch', hlMatch)
 
-				this.textObject.addColor('#88B14E', text.length + hlMatch.index);
+        this.textObject.addColor('#88B14E', text.length + hlMatch.index)
 
-				this.textObject.addColor('#FFFFFF', text.length + hlMatch.index + hlMatch[0].length);
+        this.textObject.addColor('#FFFFFF', text.length + hlMatch.index + hlMatch[0].length)
 
-			}
-			*/
+      }
+      */
 
       line = line.replace(/\{([A-Za-z0-9\s]+)\}/g, (match, group, index) => {
-        // console.log('group', match, group, index);
+        // console.log('group', match, group, index)
         this.textObject.addColor('#88B14E', (text.length - i) + index)
         this.textObject.addColor('#FFFFFF', (text.length - i) + index + group.length)
         return group
@@ -226,7 +226,7 @@ class MulleSubtitle {
 
     this.textObject.text = text
 
-    this.textObject.visible = text != ''
+    this.textObject.visible = text !== ''
   }
 }
 

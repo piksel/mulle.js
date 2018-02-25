@@ -19,14 +19,14 @@ class BootState extends Phaser.State {
 
       // launch on connect
       this.game.mulle.net.socket.addEventListener('open', (event) => {
-        if (this.game.state.current == 'boot') {
+        if (this.game.state.current === 'boot') {
           this.game.state.start('load')
         }
       })
 
       // inform on connection close
       this.game.mulle.net.socket.addEventListener('close', (event) => {
-        if (this.game.state.current == 'boot') {
+        if (this.game.state.current === 'boot') {
           alert('Server ej tillgänglig, multiplayer avstängt.')
 
           this.game.state.start('load')

@@ -8,16 +8,16 @@ class MullePartData {
 
     this.data = partData // game.mulle.PartsDB[ partId ];
 
-    this.junkView 	= this.data.junkView
-    this.UseView 	= this.data.UseView
-    this.UseView2 	= this.data.UseView2
+    this.junkView = this.data.junkView
+    this.UseView = this.data.UseView
+    this.UseView2 = this.data.UseView2
 
     this.description = this.data.description
 
     this.Requires = this.data.Requires
     this.Covers = this.data.Covers
 
-    if (this.data.master != 0) {
+    if (this.data.master !== 0) {
       this.master = this.data.master
       // this.master = new MulleCarpart( this._master );
     } else {
@@ -54,18 +54,18 @@ class MullePartData {
 
   getProperty (name, defVal = null) {
     /*
-		if(!this.data) return false;
+    if (!this.data) return false
 
-		// quick lookup
-		if( this.data.Properties[ name ] ) return this.data.Properties[ name ];
+    // quick lookup
+    if (this.data.Properties[name]) return this.data.Properties[name]
 
-		// case insensitive lookup
-		for( var n in this.data.Properties ){
-			if( name.toLocaleString() == n.toLowerCase() ){
-				return this.data.Properties[n];
-			}
-		}
-		*/
+    // case insensitive lookup
+    for (var n in this.data.Properties) {
+      if (name.toLocaleString() === n.toLowerCase()) {
+        return this.data.Properties[n]
+      }
+    }
+    */
 
     name = name.toLowerCase()
 
