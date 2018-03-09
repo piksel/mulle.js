@@ -36,6 +36,7 @@
 	"dependencies": {
 		"colors": "^1.1.2",
 		"gulp-grunt": "^0.5.5",
+		"load-grunt-config": "^0.19.2",
 		"maxrects-packer": "^1.2.0",
 		"moment": "^2.20.1",
 		"webpack-dev-server": "^2.9.1"
