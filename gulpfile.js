@@ -46,14 +46,14 @@ gulp.task('phaser', function () {
   })
   */
 
-  exec(cmd.join(' '), function (err, stdout, stderr) {
+  /*exec(cmd.join(' '), function (err, stdout, stderr) {
     console.log('phaser err: ' + err)
     console.log('phaser stdout: ' + stdout)
     console.log('phaser stderr: ' + stderr)
 
     gulp.src('./node_modules/phaser-ce/dist/phaser.min.js').pipe(gulp.dest('dist/'))
     gulp.src('./node_modules/phaser-ce/dist/phaser.map').pipe(gulp.dest('dist/'))
-  })
+  })*/
 
   // grunt custom --exclude=ninja,p2,tilemaps,particles,weapon,creature,video --uglify --sourcemap
 
