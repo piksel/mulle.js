@@ -19,6 +19,9 @@ import bitstring
 
 import tempfile
 
+import platform
+
+OS_PLATFORM = platform.system()
 
 PALETTE_MAC = [
 	0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x00, 0x22, 0x22, 0x22, 0x00, 0x44, 0x44, 0x44, 0x00, 0x55, 0x55, 0x55, 0x00, 0x77, 0x77, 0x77, 0x00, 0x88, 0x88, 0x88, 0x00, 0xAA, 0xAA, 0xAA, 0x00, 0xBB, 0xBB, 0xBB, 0x00, 0xDD, 0xDD, 0xDD, 0x00, 0xEE, 0xEE, 0xEE, 0x00, 0x11, 0x00, 0x00,
@@ -1467,21 +1470,37 @@ class ShockwaveParser:
 
 										dr.point( (x, y), bitmapValues[y][x] )
 									
-							tmpFile = tempfile.NamedTemporaryFile()
-							im.save(tmpFile, "BMP")
+							tmpFile = tempfile.NamedTemporaryFile(delete = False)
+							try:
+								#https://stackoverflow.com/questions/15169101/how-to-create-a-temporary-file-that-can-be-read-by-a-subprocess
+								im.save(tmpFile, "BMP")
+								tmpFile.close()
+								fullOutFile = outPath + "/" + outFileName + ".png"
+								# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
 
-							# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
-
-							#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
-							if self.baseName in OPAQUE and num in OPAQUE[self.baseName]:
-								print("Opaque!")
-								call(["convert", tmpFile.name, outPath + "/" + outFileName + ".png"])
-								# call("magick convert " + outPath + "/" + outFileName + ".bmp " + outPath + "/" + outFileName + ".png")
-							else:
-								print("Translucent!")
-								call(["convert", tmpFile.name, "-transparent", "#FFFFFF", outPath + "/" + outFileName + ".png"])
-								# call("magick convert " + outPath + "/" + outFileName + ".bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
-							tmpFile.close()
+								#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
+								if self.baseName in OPAQUE and num in OPAQUE[self.baseName]:
+									print("***"*10)
+									print("Opaque!")							
+									print(fullOutFile)
+									print("***"*10)
+									if OS_PLATFORM == 'Windows':
+										call(["cmd", '/c', "magick convert", tmpFile.name, fullOutFile])
+									else:
+										call(["magick", "convert", tmpFile.name, fullOutFile])
+									#call("magick convert " + outPath + "/" + outFileName + ".bmp " + outPath + "/" + outFileName + ".png")
+								else:
+									print("***"*10)
+									print("Translucent!")						
+									print(fullOutFile)
+									print("***"*10)
+									if OS_PLATFORM == 'Windows':
+										call(["cmd", '/c', "magick convert", tmpFile.name, "-transparent", "#FFFFFF", fullOutFile])
+									else:
+										call(["magick", "convert", tmpFile.name, "-transparent", "#FFFFFF", fullOutFile])
+									#call("magick convert " + outPath + "/" + outFileName + ".bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
+							finally:
+								os.remove(tmpFile.name)
 
 							imMeta = {
 								"name": entry["name"],
