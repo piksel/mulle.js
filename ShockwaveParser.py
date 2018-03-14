@@ -1479,7 +1479,7 @@ class ShockwaveParser:
 								# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
 
 								#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
-								if self.baseName in OPAQUE and num in OPAQUE[self.baseName]:
+								if self.baseName.upper() in OPAQUE and num in OPAQUE[self.baseName.upper()]:
 									print("***"*10)
 									print("Opaque!")							
 									print(fullOutFile)
