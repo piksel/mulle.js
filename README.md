@@ -13,15 +13,19 @@ Python
 `sudo pip3 install PyTexturePacker pydub bitstring`
 
 Mount Mulle Meck Bygger Bilar ISO
-`mkdir ~/mullebil`
-`sudo mount -o loop mullebil.iso ~/mullebil`
+```
+mkdir ~/mullebil
+sudo mount -o loop mullebil.iso ~/mullebil
+```
 
 Set mounted game directory in extract.sh (if other than ~/mullebil) and run `./extract.sh` to extract assets.
 
 You can then generate and start the Mulle.js website, and access it at http://localhost:8080/
-`npm install`
-`npm run build`
-`npm start`
+```
+npm install
+npm run build
+npm start
+```
 
 ## Windows
 
