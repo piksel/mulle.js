@@ -28,13 +28,13 @@ npm start
 ```
 
 ## Windows
-Install dependencies
-Download and install Python3 from https://www.python.org/downloads/
+Install dependencies  
+Download and install Python3 from https://www.python.org/downloads/  
 Download and install imagemagick from https://www.imagemagick.org/script/download.php choose ffmpeg as option during installation
 
 `pip3 install PyTexturePacker pydub bitstring`
 
-Mount Mulle Meck Bygger Bilar ISO
+Mount Mulle Meck Bygger Bilar ISO  
 `extract.bat <mounted dir>`
 
 You can then generate and start the Mulle.js website, and access it at http://localhost:8080/
