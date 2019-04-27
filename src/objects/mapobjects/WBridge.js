@@ -1,13 +1,13 @@
-"use strict";
+'use strict'
 
-var MapObject = {};
+var MapObject = {}
 
-MapObject.onCreate = function(){
-	console.error('unfinished object', this.id, this);
-};
+MapObject.onCreate = function () {
+  console.error('unfinished object', this.id, this)
+}
 
-MapObject.onEnterInner = function(){
+MapObject.onEnterInner = function () {
 
-};
+}
 
-export default MapObject;
+export default MapObject

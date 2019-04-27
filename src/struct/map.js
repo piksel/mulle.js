@@ -1,34 +1,25 @@
 class MulleMap {
+  constructor (game, id) {
+    this.game = game
 
-	constructor( game, id ){
+    this.MapId = id
 
-		this.game = game;
+    this._data = {}
+  }
 
-		this.MapId = id;
+  reset () {
+    // console.log('map', this._data);
 
-		this._data = {};
+    this.MapImage = this._data.MapImage
+    this.Topology = this._data.Topology
+    this.objects = this._data.objects
+  }
 
-	}
+  fromJSON (data) {
+    this._data = data
 
-	reset(){
-
-		// console.log('map', this._data);
-
-		this.MapImage 	= this._data.MapImage;
-		this.Topology 	= this._data.Topology;
-		this.objects 	= this._data.objects;
-
-	}
-
-	fromJSON( data ){
-
-		this._data = data;
-
-		this.reset();
-
-	}
-
-
+    this.reset()
+  }
 }
 
-export default MulleMap;
+export default MulleMap

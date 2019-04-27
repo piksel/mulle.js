@@ -228,8 +228,10 @@ MulleResources.append(resSolhem)
 
 
 assetOutPath = "./dist/assets"
+if not os.path.exists(assetOutPath):
+	os.makedirs(assetOutPath)
 assetWebPath = "assets"
-resourcePath = '<<<<<<<<<<CST STORAGE PATH>>>>>>>>>>'
+resourcePath = 'cst_out_new'
 meta = {}
 
 assetIndex = {}
@@ -253,16 +255,16 @@ for res in MulleResources:
 
 	for f in res.files:
 
-		dirPath = resourcePath + '\\' + f['dir']
+		dirPath = resourcePath + '/' + f['dir']
 
 		j = None
 
 		if f['dir'] in meta:
 			j = meta[ f['dir'] ]
 		else:
-			# j = require( dirPath + '\\metadata.json');
+			# j = require( dirPath + '/metadata.json');
 			
-			with open(dirPath + '\\metadata.json') as data_file:
+			with open(dirPath + '/metadata.json') as data_file:
 				j = json.load( data_file )
 
 			meta[ f['dir'] ] = j
@@ -276,9 +278,9 @@ for res in MulleResources:
 			continue
 
 
-		libPath = dirPath + '\\' + lib['name']
+		libPath = dirPath + '/' + lib['name']
 		
-		fileBasePath = libPath + '\\' + str(f['num'])
+		fileBasePath = libPath + '/' + str(f['num'])
 
 		if mem['castType'] == 1:
 

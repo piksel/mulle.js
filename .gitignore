@@ -6,3 +6,6 @@ audiosprite/__pycache__/
 docs/
 mulle.sublime-workspace
 mulle.sublime-project
+cst_out_new/
+*.swp
+*.pyc

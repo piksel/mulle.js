@@ -17,6 +17,11 @@ from PIL import Image, ImageDraw, ImagePalette
 
 import bitstring
 
+import tempfile
+
+import platform
+
+OS_PLATFORM = platform.system()
 
 PALETTE_MAC = [
 	0x00, 0x00, 0x00, 0x00, 0x11, 0x11, 0x11, 0x00, 0x22, 0x22, 0x22, 0x00, 0x44, 0x44, 0x44, 0x00, 0x55, 0x55, 0x55, 0x00, 0x77, 0x77, 0x77, 0x00, 0x88, 0x88, 0x88, 0x00, 0xAA, 0xAA, 0xAA, 0x00, 0xBB, 0xBB, 0xBB, 0x00, 0xDD, 0xDD, 0xDD, 0x00, 0xEE, 0xEE, 0xEE, 0x00, 0x11, 0x00, 0x00,
@@ -202,7 +207,7 @@ class ShockwaveParser:
 		self.forceLittle = False
 
 	def log(self, t):
-		print(t)
+		print(t.encode('iso8859-1'))
 
 	def readByte(self, big):
 		return struct.unpack( ('b' if big else '>b'), self.f.read(1) )[0]
@@ -221,9 +226,9 @@ class ShockwaveParser:
 
 	def readString(self, l, big):
 		if big:
-			return self.f.read(l).decode("ansi")[::-1]
+			return self.f.read(l).decode("iso8859-1")[::-1]
 		else:
-			return self.f.read(l).decode("ansi")
+			return self.f.read(l).decode("iso8859-1")
 
 	def readLenString(self, big):
 
@@ -233,7 +238,7 @@ class ShockwaveParser:
 		if l == 0:
 			txt = ""
 		else:
-			txt = self.f.read(l).decode("ansi")
+			txt = self.f.read(l).decode("iso8859-1")
 
 		if self.BigEndian:
 			self.f.seek(1, 1)
@@ -1250,7 +1255,7 @@ class ShockwaveParser:
 							if not lib in self.textContents:
 								self.textContents[lib] = {}
 
-							self.textContents[lib][num] = textContent.decode('ansi')
+							self.textContents[lib][num] = textContent.decode('iso8859-1')
 
 
 					if entry['castType'] == CastType.SOUND.value:
@@ -1465,22 +1470,37 @@ class ShockwaveParser:
 
 										dr.point( (x, y), bitmapValues[y][x] )
 									
-							
-							im.save( "C:/temp/swp.bmp", "BMP")
-							# im.save( outPath + "/" + outFileName + ".bmp", "BMP")
+							tmpFile = tempfile.NamedTemporaryFile(delete = False)
+							try:
+								#https://stackoverflow.com/questions/15169101/how-to-create-a-temporary-file-that-can-be-read-by-a-subprocess
+								im.save(tmpFile, "BMP")
+								tmpFile.close()
+								fullOutFile = outPath + "/" + outFileName + ".png"
+								# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
 
-							# regs = str(entry["imageRegX"]) + "x" + str(entry["imageRegY"])
-
-							#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
-							if self.baseName in OPAQUE and num in OPAQUE[self.baseName]:
-								print("Opaque!")
-								call("magick convert C:/temp/swp.bmp " + outPath + "/" + outFileName + ".png")
-								# call("magick convert " + outPath + "/" + outFileName + ".bmp " + outPath + "/" + outFileName + ".png")
-							else:
-								print("Translucent!")
-								call("magick convert C:/temp/swp.bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
-								# call("magick convert " + outPath + "/" + outFileName + ".bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
-
+								#if entry["imageWidth"] > 390 or entry["imageHeight"] > 390:
+								if self.baseName.upper() in OPAQUE and num in OPAQUE[self.baseName.upper()]:
+									print("***"*10)
+									print("Opaque!")							
+									print(fullOutFile)
+									print("***"*10)
+									if OS_PLATFORM == 'Windows':
+										call(["cmd", '/c', "magick convert", tmpFile.name, fullOutFile])
+									else:
+										call(["magick", "convert", tmpFile.name, fullOutFile])
+									#call("magick convert " + outPath + "/" + outFileName + ".bmp " + outPath + "/" + outFileName + ".png")
+								else:
+									print("***"*10)
+									print("Translucent!")						
+									print(fullOutFile)
+									print("***"*10)
+									if OS_PLATFORM == 'Windows':
+										call(["cmd", '/c', "magick convert", tmpFile.name, "-transparent", "#FFFFFF", fullOutFile])
+									else:
+										call(["magick", "convert", tmpFile.name, "-transparent", "#FFFFFF", fullOutFile])
+									#call("magick convert " + outPath + "/" + outFileName + ".bmp -transparent \"#FFFFFF\" " + outPath + "/" + outFileName + ".png")
+							finally:
+								os.remove(tmpFile.name)
 
 							imMeta = {
 								"name": entry["name"],

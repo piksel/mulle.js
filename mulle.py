@@ -9,7 +9,7 @@ import json
 
 from ShockwaveParser import ShockwaveParser, CastType
 
-from listparser import ShockwaveListParser
+#from listparser import ShockwaveListParser
 
 rawData = {
 	"objects": [],
@@ -140,7 +140,6 @@ print("finished")
 
 
 
-'''
 files = ['CDDATA.CXT', '03.DXR', '04.DXR', '05.DXR', '00.CXT']
 
 offsets = {}
@@ -183,6 +182,5 @@ offOut = open( "offsets.json", "w")
 offOut.write( json.dumps( offsets ) )
 offOut.close()
 
-'''
 
 #print(offsets)
